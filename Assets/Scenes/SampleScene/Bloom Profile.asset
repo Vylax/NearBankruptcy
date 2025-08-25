@@ -27,7 +27,7 @@ MonoBehaviour:
     m_Value: 0.175
   clamp:
     m_OverrideState: 1
-    m_Value: 0.55
+    m_Value: 0.7
   tint:
     m_OverrideState: 0
     m_Value: {r: 0.9411765, g: 0.8641107, b: 0.61364704, a: 1}
