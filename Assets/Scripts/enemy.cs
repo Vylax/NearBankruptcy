@@ -1,11 +1,23 @@
 using UnityEngine;
+using System.Collections;
 
 public class Enemy : MonoBehaviour
 {
+    bool movingEnemy = true;
+
     public float moveSpeed = 2f;
-    public float raycastDistance = 0.8f;
-    public LayerMask wallLayer = 6;
     bool movementDirection = true;
+
+    float raycastDistance = 0.8f;
+    LayerMask wallLayer = 6;
+
+    bool isWaiting = false;
+
+    IEnumerator Wait() {
+        isWaiting = true;
+        yield return new WaitForSeconds(0.5f);
+        isWaiting = false;
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -21,29 +33,37 @@ public class Enemy : MonoBehaviour
 
     void FixedUpdate()
     {
-        move();
+        if (movingEnemy)
+        {
+            move();
+        }
     }
 
     void move()
     {
-        Vector2 raycastDirection = movementDirection ? Vector2.left : Vector2.right;
-        
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, raycastDirection, raycastDistance, wallLayer);
-        
-        if (hit.collider != null)
+        if (!isWaiting)
         {
-            movementDirection = !movementDirection;
-        }
+            Vector2 raycastDirection = movementDirection ? Vector2.left : Vector2.right;
+        
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, raycastDirection, raycastDistance, wallLayer);
+            
+            if (hit.collider != null)
+            {
+                print("aaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                StartCoroutine(Wait());
+                movementDirection = !movementDirection;
+            }
 
-        if (movementDirection)
-        {
-            Vector3 movement = Vector3.left * moveSpeed * Time.fixedDeltaTime;
-            transform.Translate(movement);
-        }
-        else
-        {
-            Vector3 movement = Vector3.right * moveSpeed * Time.fixedDeltaTime;
-            transform.Translate(movement);
+            if (movementDirection)
+            {
+                Vector3 movement = Vector3.left * moveSpeed * Time.fixedDeltaTime;
+                transform.Translate(movement);
+            }
+            else
+            {
+                Vector3 movement = Vector3.right * moveSpeed * Time.fixedDeltaTime;
+                transform.Translate(movement);
+            }
         }
     }
 }
