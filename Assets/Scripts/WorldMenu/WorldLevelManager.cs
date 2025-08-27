@@ -1,10 +1,10 @@
 using UnityEngine;
-using HFSM;
+using UnityHFSM;
 
 public class WorldLevelManager : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private AnimationSequencer progressAnimationSequencer;
+    [SerializeField] private SimpleAnimationSequencer progressAnimationSequencer;
     [SerializeField] private LevelBump[] levelBumps = new LevelBump[5];
     
     [Header("Settings")]
@@ -14,12 +14,12 @@ public class WorldLevelManager : MonoBehaviour
     private StateMachine fsm;
     
     // States
-    private enum States
+    private static class States
     {
-        Initialize,
-        Idle,
-        PlayingProgressAnimation,
-        PlayerInteracting
+        public const string Initialize = "Initialize";
+        public const string Idle = "Idle";
+        public const string PlayingProgressAnimation = "PlayingProgressAnimation";
+        public const string PlayerInteracting = "PlayerInteracting";
     }
     
     // Events
@@ -30,18 +30,18 @@ public class WorldLevelManager : MonoBehaviour
     {
         InitializeStateMachine();
         SetupEventListeners();
-        fsm.Start();
+        fsm.Init();
     }
     
     private void OnDestroy()
     {
         CleanupEventListeners();
-        fsm?.Stop();
+        // fsm?.Stop(); // UnityHFSM doesn't have a Stop method
     }
     
     private void Update()
     {
-        fsm?.Update();
+        fsm?.OnLogic();
     }
     
     private void InitializeStateMachine()
@@ -74,21 +74,12 @@ public class WorldLevelManager : MonoBehaviour
             Debug.Log("WorldLevelManager: Player interacting");
         });
         
-        // Transitions
-        fsm.AddTransition(States.Initialize, States.Idle, 
-            trigger: "InitComplete");
-        
-        fsm.AddTransition(States.Idle, States.PlayingProgressAnimation, 
-            trigger: "PlayProgress");
-        
-        fsm.AddTransition(States.PlayingProgressAnimation, States.Idle, 
-            trigger: "ProgressComplete");
-        
-        fsm.AddTransition(States.Idle, States.PlayerInteracting, 
-            trigger: "StartInteraction");
-        
-        fsm.AddTransition(States.PlayerInteracting, States.Idle, 
-            trigger: "EndInteraction");
+        // Transitions using shortcut methods
+        fsm.AddTriggerTransition("InitComplete", States.Initialize, States.Idle);
+        fsm.AddTriggerTransition("PlayProgress", States.Idle, States.PlayingProgressAnimation);
+        fsm.AddTriggerTransition("ProgressComplete", States.PlayingProgressAnimation, States.Idle);
+        fsm.AddTriggerTransition("StartInteraction", States.Idle, States.PlayerInteracting);
+        fsm.AddTriggerTransition("EndInteraction", States.PlayerInteracting, States.Idle);
         
         // Set initial state
         fsm.SetStartState(States.Initialize);
@@ -144,17 +135,10 @@ public class WorldLevelManager : MonoBehaviour
     private void InitializeWorld()
     {
         // Setup initial world state based on current progress
-        if (GameManager.Instance != null)
-        {
-            int currentLevel = GameManager.Instance.CurrentLevel;
-            
-            // Play progress animation up to current level (instant or delayed)
-            if (currentLevel > 1 && progressAnimationSequencer != null)
-            {
-                // Show progress immediately for levels already completed
-                progressAnimationSequencer.PlaySequenceToStep(currentLevel - 2);
-            }
-        }
+        // Note: We no longer auto-play progress animation on scene load
+        // The animation will only play when triggered by level completion
+        
+        Debug.Log("World initialized - sprites in idle state");
         
         // Complete initialization
         Invoke(nameof(CompleteInitialization), 0.1f);
@@ -170,10 +154,11 @@ public class WorldLevelManager : MonoBehaviour
     {
         if (progressAnimationSequencer != null && GameManager.Instance != null)
         {
-            int targetStep = GameManager.Instance.CurrentLevel - 2;
-            if (targetStep >= 0)
+            int completedLevel = GameManager.Instance.CurrentLevel - 1;
+            if (completedLevel >= 1)
             {
-                progressAnimationSequencer.PlaySequenceToStep(targetStep);
+                // Play animation for the level that was just completed
+                progressAnimationSequencer.PlayLevelCompletionAnimation(completedLevel);
             }
             else
             {
@@ -193,7 +178,7 @@ public class WorldLevelManager : MonoBehaviour
         Debug.Log($"WorldLevelManager: Level changed to {newLevel}");
         
         // Trigger progress animation if we're in idle state
-        if (fsm.ActiveStateName == States.Idle.ToString())
+        if (fsm.ActiveStateName == States.Idle)
         {
             fsm.Trigger("PlayProgress");
         }
@@ -204,7 +189,7 @@ public class WorldLevelManager : MonoBehaviour
         Debug.Log($"WorldLevelManager: Level {completedLevel} completed");
         
         // Play progress animation for the newly unlocked level
-        if (fsm.ActiveStateName == States.Idle.ToString())
+        if (fsm.ActiveStateName == States.Idle)
         {
             fsm.Trigger("PlayProgress");
         }
@@ -214,7 +199,7 @@ public class WorldLevelManager : MonoBehaviour
     {
         Debug.Log("WorldLevelManager: Progress animation complete");
         
-        if (fsm.ActiveStateName == States.PlayingProgressAnimation.ToString())
+        if (fsm.ActiveStateName == States.PlayingProgressAnimation)
         {
             fsm.Trigger("ProgressComplete");
         }
@@ -226,7 +211,7 @@ public class WorldLevelManager : MonoBehaviour
     {
         Debug.Log($"WorldLevelManager: Level {levelNumber} start requested");
         
-        if (fsm.ActiveStateName == States.Idle.ToString())
+        if (fsm.ActiveStateName == States.Idle)
         {
             fsm.Trigger("StartInteraction");
             
@@ -258,24 +243,38 @@ public class WorldLevelManager : MonoBehaviour
     
     private void ReturnToIdle()
     {
-        if (fsm.ActiveStateName == States.PlayerInteracting.ToString())
+        if (fsm.ActiveStateName == States.PlayerInteracting)
         {
             fsm.Trigger("EndInteraction");
         }
     }
     
     // Public interface
-    public bool IsInitialized => fsm.ActiveStateName != States.Initialize.ToString();
-    public bool IsPlayingAnimation => fsm.ActiveStateName == States.PlayingProgressAnimation.ToString();
+    public bool IsInitialized => fsm.ActiveStateName != States.Initialize;
+    public bool IsPlayingAnimation => fsm.ActiveStateName == States.PlayingProgressAnimation;
     public string CurrentState => fsm.ActiveStateName;
     
     // Debug methods
     [ContextMenu("Force Progress Animation")]
     public void ForceProgressAnimation()
     {
-        if (fsm.ActiveStateName == States.Idle.ToString())
+        if (fsm.ActiveStateName == States.Idle)
         {
             fsm.Trigger("PlayProgress");
+        }
+    }
+    
+    [ContextMenu("Show Current Progress")]
+    public void ShowCurrentProgress()
+    {
+        if (GameManager.Instance != null && progressAnimationSequencer != null)
+        {
+            int currentLevel = GameManager.Instance.CurrentLevel;
+            if (currentLevel > 1)
+            {
+                // Show all progress up to the current level
+                progressAnimationSequencer.PlayAllAnimationsUpToLevel(currentLevel - 1);
+            }
         }
     }
     
