@@ -413,14 +413,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5f5441acdd326b448d2a4e55cbb0224, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animators:
-  - {fileID: 312095828}
-  - {fileID: 1575047782}
-  - {fileID: 569605864}
-  - {fileID: 1175399295}
-  - {fileID: 1276762900}
+  levelGroups:
+  - levelNumber: 1
+    levelName: 
+    animators:
+    - {fileID: 312095828}
+    - {fileID: 1575047782}
+    - {fileID: 569605864}
+    - {fileID: 1175399295}
+  - levelNumber: 2
+    levelName: 
+    animators:
+    - {fileID: 1276762900}
+    - {fileID: 1317620430}
+    - {fileID: 1171237674}
+    - {fileID: 796175627}
   animationStateName: Line
   idleStateName: Line_Idle
+  drawnStateName: Line_drawn
   delayBetweenAnimations: 0.1
 --- !u!1 &219299723
 GameObject:
