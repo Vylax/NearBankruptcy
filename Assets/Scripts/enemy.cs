@@ -3,6 +3,8 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public float moveSpeed = 2f;
+    public float raycastDistance = 0.8f;
+    public LayerMask wallLayer = 6;
     bool movementDirection = true;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -26,7 +28,7 @@ public class Enemy : MonoBehaviour
     {
         Vector2 raycastDirection = movementDirection ? Vector2.left : Vector2.right;
         
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, raycastDirection);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, raycastDirection, raycastDistance, wallLayer);
         
         if (hit.collider != null)
         {
