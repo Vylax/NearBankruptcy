@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d57959830d1b141488b2dd6379441c45
+guid: 3fb389662f0be7142ad8df23e25576ce
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7500346548482820296
-    second: Wall (6)_0
+      213: 4191352264037530492
+    second: lb8_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Wall (6)_0
+      name: lb8_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 32
-        height: 32
+        width: 12
+        height: 12
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8c845a28275961860800000000000000
-      internalID: 7500346548482820296
+      spriteID: c7b7c7a6dacaa2a30800000000000000
+      internalID: 4191352264037530492
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Wall (6)_0: 7500346548482820296
+      lb8_0: 4191352264037530492
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
