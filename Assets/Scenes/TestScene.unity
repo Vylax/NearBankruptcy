@@ -399,7 +399,7 @@ GameObject:
   m_Component:
   - component: {fileID: 928118229}
   - component: {fileID: 928118228}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Grid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -449,6 +449,10 @@ PrefabInstance:
     - target: {fileID: 1479390682164488386, guid: 610a086f3ba516f46b6dd593a5594165, type: 3}
       propertyPath: raycastDistance
       value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1479390682164488386, guid: 610a086f3ba516f46b6dd593a5594165, type: 3}
+      propertyPath: wallLayer.m_Bits
+      value: 64
       objectReference: {fileID: 0}
     - target: {fileID: 7988521722384410461, guid: 610a086f3ba516f46b6dd593a5594165, type: 3}
       propertyPath: m_LocalPosition.x
@@ -509,7 +513,7 @@ GameObject:
   - component: {fileID: 983539309}
   - component: {fileID: 983539308}
   - component: {fileID: 983539307}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}

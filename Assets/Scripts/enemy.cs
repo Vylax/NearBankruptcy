@@ -6,10 +6,13 @@ public class Enemy : MonoBehaviour
     bool movingEnemy = true;
 
     public float moveSpeed = 2f;
+    [SerializeField]
     bool movementDirection = true;
 
+    Vector2 MovementDirection => (movementDirection ? Vector2.left : Vector2.right);
+
     float raycastDistance = 0.8f;
-    LayerMask wallLayer = 6;
+    public LayerMask wallLayer;
 
     bool isWaiting = false;
 
@@ -41,29 +44,18 @@ public class Enemy : MonoBehaviour
 
     void move()
     {
-        if (!isWaiting)
-        {
-            Vector2 raycastDirection = movementDirection ? Vector2.left : Vector2.right;
-        
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, raycastDirection, raycastDistance, wallLayer);
-            
-            if (hit.collider != null)
-            {
-                print("aaaaaaaaaaaaaaaaaaaaaaaaaaa");
-                StartCoroutine(Wait());
-                movementDirection = !movementDirection;
-            }
+        if (isWaiting) return;
 
-            if (movementDirection)
-            {
-                Vector3 movement = Vector3.left * moveSpeed * Time.fixedDeltaTime;
-                transform.Translate(movement);
-            }
-            else
-            {
-                Vector3 movement = Vector3.right * moveSpeed * Time.fixedDeltaTime;
-                transform.Translate(movement);
-            }
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, MovementDirection, raycastDistance, wallLayer);
+
+        if (hit.collider != null)
+        {
+            print("aaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            StartCoroutine(Wait());
+            movementDirection = !movementDirection;
         }
+
+        Vector3 movement = moveSpeed * Time.fixedDeltaTime * MovementDirection;
+        transform.Translate(movement);
     }
 }
