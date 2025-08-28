@@ -16,6 +16,8 @@ public class Enemy : MonoBehaviour
 
     bool isWaiting = false;
 
+    // private SpriteRenderer spriteRenderer;
+
     IEnumerator Wait() {
         isWaiting = true;
         yield return new WaitForSeconds(0.5f);
@@ -42,17 +44,33 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    bool detectWall()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, MovementDirection, raycastDistance, wallLayer);
+        return hit.collider != null;
+    }
+
+    bool detectHole()
+    {
+        Vector2 origin = (Vector2)transform.position + (Vector2)MovementDirection.normalized * 0.7f;
+        RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, raycastDistance, wallLayer);
+        return hit.collider == null;
+    }
+
+    // void flipSprite()
+    // {
+    //     spriteRenderer.flipX = movementDirection;
+    // }
+
     void move()
     {
         if (isWaiting) return;
 
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, MovementDirection, raycastDistance, wallLayer);
-
-        if (hit.collider != null)
+        if (detectWall() || detectHole())
         {
-            print("aaaaaaaaaaaaaaaaaaaaaaaaaaa");
             StartCoroutine(Wait());
             movementDirection = !movementDirection;
+            // flipSprite();
         }
 
         Vector3 movement = moveSpeed * Time.fixedDeltaTime * MovementDirection;

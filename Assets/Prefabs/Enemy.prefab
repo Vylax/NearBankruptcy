@@ -149,6 +149,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 2
+  movementDirection: 1
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!50 &7879922935061245750
 Rigidbody2D:
   serializedVersion: 5
