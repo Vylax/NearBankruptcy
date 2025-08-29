@@ -35,12 +35,19 @@ public class GameManager : MonoBehaviour
     
     public void CompleteLevel(int level)
     {
-        if (level == currentLevel && level < maxLevels)
+        if (level == currentLevel && level <= maxLevels)
         {
-            currentLevel++;
+            if (level < maxLevels)
+            {
+                currentLevel++;
+            }
             OnLevelCompleted?.Invoke(level);
-            OnLevelChanged?.Invoke(currentLevel);
+            if (level < maxLevels)
+            {
+                OnLevelChanged?.Invoke(currentLevel);
+            }
             SaveGameData();
+            Debug.Log($"GameManager: Completed level {level}, current level is now {currentLevel}");
         }
     }
     

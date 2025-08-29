@@ -12,6 +12,7 @@ public class WorldLevelManager : MonoBehaviour
     
     // State Machine
     private StateMachine fsm;
+    private int currentCompletedLevel = -1; // Store the level that was just completed
     
     // States
     private static class States
@@ -172,19 +173,10 @@ public class WorldLevelManager : MonoBehaviour
     
     private void PlayProgressAnimation()
     {
-        if (progressAnimationSequencer != null && GameManager.Instance != null)
+        if (progressAnimationSequencer != null && currentCompletedLevel >= 1)
         {
-            int completedLevel = GameManager.Instance.CurrentLevel - 1;
-            if (completedLevel >= 1)
-            {
-                // Play animation for the level that was just completed
-                progressAnimationSequencer.PlayLevelCompletionAnimation(completedLevel);
-            }
-            else
-            {
-                // No animation needed, complete immediately
-                OnAnimationSequenceComplete();
-            }
+            // Play animation for the level that was just completed
+            progressAnimationSequencer.PlayLevelCompletionAnimation(currentCompletedLevel);
         }
         else
         {
@@ -207,6 +199,9 @@ public class WorldLevelManager : MonoBehaviour
     private void OnLevelCompleted(int completedLevel)
     {
         Debug.Log($"WorldLevelManager: Level {completedLevel} completed");
+        
+        // Store the completed level for use in PlayProgressAnimation
+        currentCompletedLevel = completedLevel;
         
         // Play progress animation for the newly unlocked level
         if (fsm.ActiveStateName == States.Idle)
