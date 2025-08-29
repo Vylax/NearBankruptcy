@@ -12,6 +12,7 @@ public class LevelBump : MonoBehaviour
     
     [Header("UI Settings")]
     [SerializeField] private Texture2D promptSprite;
+    [SerializeField] private float verticalOffset = 1.5f; // Offset above player's head
     
     [Header("Scene Management")]
     [SerializeField] private string levelSceneName = "";
@@ -128,31 +129,8 @@ public class LevelBump : MonoBehaviour
     
     private void OnLevelChanged(int currentLevel)
     {
-        // You can add visual feedback here (e.g., change sprite, enable/disable glow)
-        bool isCurrentLevel = currentLevel == levelNumber;
-        bool isUnlocked = GameManager.Instance.IsLevelUnlocked(levelNumber);
-        
-        // Example: Change color based on status
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        if (spriteRenderer != null)
-        {
-            if (isCurrentLevel)
-            {
-                spriteRenderer.color = Color.yellow; // Current level
-            }
-            else if (isUnlocked && levelNumber < currentLevel)
-            {
-                spriteRenderer.color = Color.green; // Completed level
-            }
-            else if (isUnlocked)
-            {
-                spriteRenderer.color = Color.white; // Available level
-            }
-            else
-            {
-                spriteRenderer.color = Color.gray; // Locked level
-            }
-        }
+        // Level status changed - colors are handled by SimpleAnimationSequencer
+        // You can add other visual feedback here (e.g., enable/disable glow, particles, etc.)
     }
     
     private void OnPlayerEnterRange()
@@ -167,13 +145,22 @@ public class LevelBump : MonoBehaviour
     
     private void OnGUI()
     {
-        if (!showPrompt || promptSprite == null) return;
+        if (!showPrompt || promptSprite == null || player == null) return;
         
-        // Calculate sprite dimensions and position for bottom of screen
-        float spriteWidth = promptSprite.width;
-        float spriteHeight = promptSprite.height;
-        float x = (Screen.width - spriteWidth) / 2f;
-        float y = Screen.height - spriteHeight - 50f;
+        // Calculate position above player's head
+        Vector3 playerWorldPos = player.position + Vector3.up * verticalOffset;
+        Vector3 playerScreenPos = Camera.main.WorldToScreenPoint(playerWorldPos);
+        
+        // Check if position is visible on screen
+        if (playerScreenPos.z < 0) return; // Behind camera
+        
+        // Calculate sprite dimensions (half size)
+        float spriteWidth = promptSprite.width * 0.5f;
+        float spriteHeight = promptSprite.height * 0.5f;
+        
+        // Center the sprite above player's head (GUI coordinates have Y=0 at top)
+        float x = playerScreenPos.x - spriteWidth * 0.5f;
+        float y = Screen.height - playerScreenPos.y - spriteHeight * 0.5f;
         
         Rect spriteRect = new Rect(x, y, spriteWidth, spriteHeight);
         

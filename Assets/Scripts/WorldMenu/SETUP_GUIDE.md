@@ -180,6 +180,7 @@ Create this exact hierarchy in your World Menu scene:
    
    All: Interaction Range = 3, Interaction Key = F
    Prompt Sprite: [Drag your custom interaction sprite here]
+   Vertical Offset: 1.5 (distance above player's head)
    ```
 
 #### **🎯 Player Setup:**
@@ -235,7 +236,7 @@ Level Group 2:
    - **Current level**: Lines instantly appear drawn (no bump yet)
    - **Fresh Level 1 start**: Wait 3 seconds → draw level 1 lines (no bump)
    - **After Reset**: Immediately draw level 1 lines (no delay)
-3. **Player approaches current level bump** → Custom interaction sprite appears
+3. **Player approaches current level bump** → Custom interaction sprite appears above player's head
 4. **Player completes level** → returns to world menu
 5. **Level completion sequence**:
    - **Completed level bump**: Animates and turns green (done)
@@ -348,6 +349,12 @@ FinalSprite3: Line_Idle → Line → Line_drawn
 - Check Collider2D is set as Trigger  
 - Confirm Level Numbers are set correctly (1-5)
 
+### **Wrong Bump Colors (Yellow, etc.):**
+- **Fixed**: Removed conflicting color system from LevelBump.cs
+- All bump colors are now controlled ONLY by SimpleAnimationSequencer
+- Use the color settings in SimpleAnimationSequencer: Done Color, Locked Color, Unlocked Color
+- No more yellow or hardcoded colors from LevelBump script
+
 ### **Interaction Sprite Not Showing:**
 - **Critical**: Make sure your player GameObject has the **"Player" tag**
 - **Critical**: Make sure you've assigned a **Prompt Sprite** (Texture2D) in the LevelBump Inspector
@@ -360,7 +367,9 @@ FinalSprite3: Line_Idle → Line → Line_drawn
   - ✅ "Showing interaction sprite" = Working correctly
   - 🔒 "This level is locked" = Walk to current level bump instead  
   - ✅ "This level is already completed" = Walk to current level bump instead
-- **Sprite Requirements**: Use any Texture2D asset (PNG, JPG, etc.) - the system will display it at native size
+- **Sprite Requirements**: Use any Texture2D asset (PNG, JPG, etc.) - the system will display it at 50% size above player's head
+- **Positioning**: Sprite appears above player with adjustable Vertical Offset (default: 1.5 units)
+- **Camera Requirement**: Requires Camera.main to be set (usually automatic with main camera)
 - **Changed**: Now uses **F key** instead of Space to avoid accidental level loading when jumping
 
 ### **Progress Not Saving:**
