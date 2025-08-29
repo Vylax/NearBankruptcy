@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 7e49861b0412434459029315e5bae2e7
+guid: 2eced5e89af5c0847a885b9183917e2f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4966732595609684114
-    second: white_0
+      213: 5734008041699433796
+    second: bump_blank_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: white_0
+      name: bump_blank_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 32
-        height: 32
+        height: 10
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2984ba71bf06de440800000000000000
-      internalID: 4966732595609684114
+      spriteID: 44d5ab01fe9439f40800000000000000
+      internalID: 5734008041699433796
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      white_0: 4966732595609684114
+      bump_blank_0: 5734008041699433796
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
