@@ -7,9 +7,6 @@ public class WorldLevelManager : MonoBehaviour
     [SerializeField] private SimpleAnimationSequencer progressAnimationSequencer;
     [SerializeField] private LevelBump[] levelBumps = new LevelBump[5];
     
-    [Header("Settings")]
-    [SerializeField] private float animationDelay = 0.5f;
-    
     // State Machine
     private StateMachine fsm;
     private int currentCompletedLevel = -1; // Store the level that was just completed
@@ -23,9 +20,7 @@ public class WorldLevelManager : MonoBehaviour
         public const string PlayerInteracting = "PlayerInteracting";
     }
     
-    // Events
-    public System.Action OnInitializationComplete;
-    public System.Action OnProgressAnimationComplete;
+
     
     private void Start()
     {
@@ -168,7 +163,6 @@ public class WorldLevelManager : MonoBehaviour
     private void CompleteInitialization()
     {
         fsm.Trigger("InitComplete");
-        OnInitializationComplete?.Invoke();
     }
     
     private void PlayProgressAnimation()
@@ -218,8 +212,6 @@ public class WorldLevelManager : MonoBehaviour
         {
             fsm.Trigger("ProgressComplete");
         }
-        
-        OnProgressAnimationComplete?.Invoke();
     }
     
     private void OnLevelStartRequested(int levelNumber)
@@ -307,40 +299,5 @@ public class WorldLevelManager : MonoBehaviour
         }
     }
     
-    [ContextMenu("Reset World")]
-    public void ResetWorld()
-    {
-        if (progressAnimationSequencer != null)
-        {
-            progressAnimationSequencer.ResetSequence();
-        }
-        
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.ResetProgress();
-        }
-    }
-    
-    [ContextMenu("Test Complete Then Reset")]
-    public void TestCompleteAndReset()
-    {
-        // Test sequence: complete a level, then reset to verify animation states reset
-        if (GameManager.Instance != null)
-        {
-            Debug.Log("Testing: Completing current level...");
-            GameManager.Instance.DebugCompleteCurrentLevel();
-            
-            // Reset after 2 seconds to see the animation reset
-            Invoke(nameof(TestResetAfterDelay), 2f);
-        }
-    }
-    
-    private void TestResetAfterDelay()
-    {
-        Debug.Log("Testing: Resetting progress...");
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.ResetProgress();
-        }
-    }
+
 }

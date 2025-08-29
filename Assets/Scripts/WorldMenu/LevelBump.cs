@@ -7,7 +7,6 @@ public class LevelBump : MonoBehaviour
     
     [Header("Interaction Settings")]
     [SerializeField] private float interactionRange = 2f;
-    [SerializeField] private LayerMask playerLayerMask = 1;
     [SerializeField] private KeyCode interactionKey = KeyCode.F;
     
     [Header("UI Settings")]

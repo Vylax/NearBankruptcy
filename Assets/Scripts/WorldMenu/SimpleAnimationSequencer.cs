@@ -210,25 +210,7 @@ public class SimpleAnimationSequencer : MonoBehaviour
         return targetGroup.bumpAnimator.GetCurrentAnimatorStateInfo(0).IsName(bumpDrawnStateName);
     }
     
-    /// <summary>
-    /// Legacy method - play all animations in all groups
-    /// </summary>
-    public void PlaySequence()
-    {
-        if (levelGroups != null && levelGroups.Length > 0)
-        {
-            PlayAllAnimationsUpToLevel(levelGroups.Length);
-        }
-    }
-    
-    /// <summary>
-    /// Legacy method for backward compatibility
-    /// </summary>
-    public void PlaySequenceToStep(int targetStep)
-    {
-        // Convert old step-based to level-based
-        PlayLevelCompletionAnimation(targetStep + 1);
-    }
+
     
     /// <summary>
     /// Reset all animations to idle state
