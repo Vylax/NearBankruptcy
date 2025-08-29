@@ -14,11 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerLayer:
     serializedVersion: 2
-<<<<<<< HEAD
     m_Bits: 256
-=======
-    m_Bits: 0
->>>>>>> WorldMenu
   SnapInput: 1
   VerticalDeadZoneThreshold: 0.3
   HorizontalDeadZoneThreshold: 0.1
