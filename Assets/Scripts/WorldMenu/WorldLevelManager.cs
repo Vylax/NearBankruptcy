@@ -92,6 +92,7 @@ public class WorldLevelManager : MonoBehaviour
         {
             GameManager.Instance.OnLevelChanged += OnLevelChanged;
             GameManager.Instance.OnLevelCompleted += OnLevelCompleted;
+            GameManager.Instance.OnProgressReset += OnProgressReset;
         }
         
         // Listen to animation sequencer events
@@ -116,6 +117,7 @@ public class WorldLevelManager : MonoBehaviour
         {
             GameManager.Instance.OnLevelChanged -= OnLevelChanged;
             GameManager.Instance.OnLevelCompleted -= OnLevelCompleted;
+            GameManager.Instance.OnProgressReset -= OnProgressReset;
         }
         
         if (progressAnimationSequencer != null)
@@ -132,14 +134,32 @@ public class WorldLevelManager : MonoBehaviour
         }
     }
     
-    private void InitializeWorld()
+        private void InitializeWorld()
     {
         // Setup initial world state based on current progress
-        // Note: We no longer auto-play progress animation on scene load
-        // The animation will only play when triggered by level completion
-        
-        Debug.Log("World initialized - sprites in idle state");
-        
+        if (GameManager.Instance != null && progressAnimationSequencer != null)
+        {
+            int currentLevel = GameManager.Instance.CurrentLevel;
+
+            // Show existing progress immediately (without animation) for completed levels
+            if (currentLevel > 1)
+            {
+                int completedLevels = currentLevel - 1;
+                progressAnimationSequencer.SetLevelsToDrawnState(completedLevels);
+                Debug.Log($"World initialized - showing existing progress for completed levels 1-{completedLevels}");
+                
+                // Also set current level lines to drawn (since player is already on this level)
+                progressAnimationSequencer.SetCurrentLevelLinesToDrawnState(currentLevel);
+                Debug.Log($"World initialized - current level {currentLevel} lines shown");
+            }
+            else
+            {
+                Debug.Log("World initialized - starting from level 1, will draw lines after delay");
+                // For level 1, start the delayed line drawing
+                progressAnimationSequencer.DrawCurrentLevelLinesWithDelay();
+            }
+        }
+
         // Complete initialization
         Invoke(nameof(CompleteInitialization), 0.1f);
     }
@@ -249,6 +269,17 @@ public class WorldLevelManager : MonoBehaviour
         }
     }
     
+    private void OnProgressReset()
+    {
+        Debug.Log("WorldLevelManager: Progress reset - resetting animation states and drawing level 1");
+        
+        // Reset all animation states back to idle and immediately start level 1 drawing
+        if (progressAnimationSequencer != null)
+        {
+            progressAnimationSequencer.ResetSequence();
+        }
+    }
+    
     // Public interface
     public bool IsInitialized => fsm.ActiveStateName != States.Initialize;
     public bool IsPlayingAnimation => fsm.ActiveStateName == States.PlayingProgressAnimation;
@@ -286,6 +317,29 @@ public class WorldLevelManager : MonoBehaviour
             progressAnimationSequencer.ResetSequence();
         }
         
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ResetProgress();
+        }
+    }
+    
+    [ContextMenu("Test Complete Then Reset")]
+    public void TestCompleteAndReset()
+    {
+        // Test sequence: complete a level, then reset to verify animation states reset
+        if (GameManager.Instance != null)
+        {
+            Debug.Log("Testing: Completing current level...");
+            GameManager.Instance.DebugCompleteCurrentLevel();
+            
+            // Reset after 2 seconds to see the animation reset
+            Invoke(nameof(TestResetAfterDelay), 2f);
+        }
+    }
+    
+    private void TestResetAfterDelay()
+    {
+        Debug.Log("Testing: Resetting progress...");
         if (GameManager.Instance != null)
         {
             GameManager.Instance.ResetProgress();

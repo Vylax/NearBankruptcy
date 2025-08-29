@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     // Events
     public System.Action<int> OnLevelChanged;
     public System.Action<int> OnLevelCompleted;
+    public System.Action OnProgressReset;
     
     private void Awake()
     {
@@ -70,12 +71,25 @@ public class GameManager : MonoBehaviour
     {
         currentLevel = 1;
         PlayerPrefs.DeleteKey("CurrentLevel");
+        
+        // Notify listeners that progress has been reset
+        OnProgressReset?.Invoke();
         OnLevelChanged?.Invoke(currentLevel);
+        
+        Debug.Log("GameManager: Progress reset to level 1");
     }
     
     [ContextMenu("Complete Current Level")]
     public void DebugCompleteCurrentLevel()
     {
         CompleteLevel(currentLevel);
+    }
+    
+    [ContextMenu("Complete Level 5")]
+    public void DebugCompleteLevel5()
+    {
+        SetCurrentLevel(5);
+        CompleteLevel(5);
+        Debug.Log("GameManager: Set to level 5 and completed it - should trigger final completion visuals");
     }
 }

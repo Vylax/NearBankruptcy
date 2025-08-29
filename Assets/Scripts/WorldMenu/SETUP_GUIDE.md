@@ -37,49 +37,80 @@ Create this exact hierarchy in your World Menu scene:
 ├── 🎮 GameManager (Empty GameObject)
 ├── 🌍 WorldLevelManager (Empty GameObject)
 ├── 📍 Level Path (Empty GameObject - for organization)
-│   ├── 🟦 Square1 (Sprite Renderer)
-│   ├── 🟦 Square2 (Sprite Renderer)  
-│   ├── 🟦 Square3 (Sprite Renderer)
-│   ├── 🔘 LevelBump1 (Sprite Renderer)
-│   ├── 🟦 Square4 (Sprite Renderer)
-│   ├── 🟦 Square5 (Sprite Renderer)
-│   ├── 🔘 LevelBump2 (Sprite Renderer)
-│   ├── 🟦 Square6 (Sprite Renderer)
-│   ├── 🟦 Square7 (Sprite Renderer)
-│   ├── 🔘 LevelBump3 (Sprite Renderer)
-│   ├── 🟦 Square8 (Sprite Renderer)
-│   ├── 🟦 Square9 (Sprite Renderer)
-│   ├── 🔘 LevelBump4 (Sprite Renderer)
-│   ├── 🟦 Square10 (Sprite Renderer)
-│   ├── 🟦 Square11 (Sprite Renderer)
-│   └── 🔘 LevelBump5 (Sprite Renderer)
+│   ├── 🟦 Square1 (Sprite Renderer + Animator)
+│   ├── 🟦 Square2 (Sprite Renderer + Animator)  
+│   ├── 🟦 Square3 (Sprite Renderer + Animator)
+│   ├── 🔘 LevelBump1_Parent (Sprite Renderer - for color)
+│   │   └── 🔘 LevelBump1_Animator (Animator - for animation)
+│   ├── 🟦 Square4 (Sprite Renderer + Animator)
+│   ├── 🟦 Square5 (Sprite Renderer + Animator)
+│   ├── 🔘 LevelBump2_Parent (Sprite Renderer - for color)
+│   │   └── 🔘 LevelBump2_Animator (Animator - for animation)
+│   ├── 🟦 Square6 (Sprite Renderer + Animator)
+│   ├── 🟦 Square7 (Sprite Renderer + Animator)
+│   ├── 🔘 LevelBump3_Parent (Sprite Renderer - for color)
+│   │   └── 🔘 LevelBump3_Animator (Animator - for animation)
+│   ├── 🟦 Square8 (Sprite Renderer + Animator)
+│   ├── 🟦 Square9 (Sprite Renderer + Animator)
+│   ├── 🔘 LevelBump4_Parent (Sprite Renderer - for color)
+│   │   └── 🔘 LevelBump4_Animator (Animator - for animation)
+│   ├── 🟦 Square10 (Sprite Renderer + Animator)
+│   ├── 🟦 Square11 (Sprite Renderer + Animator)
+│   └── 🔘 LevelBump5_Parent (Sprite Renderer - for color)
+│       └── 🔘 LevelBump5_Animator (Animator - for animation)
 └── 🎯 Player (Your player character)
 ```
 
 ---
 
-### **Step 2: Animation Setup (Simple!)**
+### **Step 2: Animation Setup**
 
-#### **For Each Sprite (Squares + Bumps):**
+#### **For Line Sprites (Squares):**
 1. **Add Animator Component**
-   - Select sprite → Add Component → Animator
+   - Select line sprite → Add Component → Animator
 
-2. **Create Animator Controller**
+2. **Create Line Animator Controller**
    - Right-click in Project → Create → Animator Controller
-   - Name it "LineAnimator" (can reuse same controller for all)
+   - Name it "LineAnimator" (can reuse same controller for all line sprites)
    - Drag controller to Animator component
 
-3. **Setup Animation States**
+3. **Setup Line Animation States**
    - Open Animator window
    - Create state named **"Line_Idle"** (default/idle state - invisible)
    - Create state named **"Line"** (drawing animation state - animated)
-   - Create state named **"Line_Drawn"** (final state - visible/drawn)
-   - Add your drawing animation clip to the "Line" state
-   - Leave "Line_Idle" empty (invisible) and "Line_Drawn" with final frame (visible)
+   - Create state named **"Line_drawn"** (final state - visible/drawn permanently)
+   - Add your line drawing animation clip to the "Line" state
+   - Leave "Line_Idle" empty (invisible) and "Line_drawn" with final frame (visible)
    - **No triggers needed!** The SimpleAnimationSequencer handles everything
 
 4. **Set Default State**
    - Right-click **"Line_Idle"** state → "Set as Layer Default State"
+
+#### **For Bump Sprites (Level Unlocks):**
+1. **Add Animator Component**
+   - Select bump sprite → Add Component → Animator
+
+2. **Create Bump Animator Controller**
+   - Right-click in Project → Create → Animator Controller
+   - Name it "BumpAnimator" (can reuse same controller for all bump sprites)
+   - Drag controller to Animator component
+
+3. **Setup Bump Animation States**
+   - Open Animator window
+   - Create state named **"Hidden"** (default/idle state - invisible)
+   - Create state named **"Drawing"** (unlock animation state - animated)
+   - Create state named **"Drawn"** (final state - visible/unlocked permanently)
+   - Add your bump unlock animation clip to the "Drawing" state
+   - Leave "Hidden" empty (invisible) and "Drawn" with final frame (visible)
+   - **No triggers needed!** The SimpleAnimationSequencer handles everything
+
+4. **Set Default State**
+   - Right-click **"Hidden"** state → "Set as Layer Default State"
+
+5. **Setup Parent-Child Structure (Important!)**
+   - **Parent GameObject**: Has the **SpriteRenderer** component (for color changes)
+   - **Child GameObject**: Has the **Animator** component (for animations)
+   - The color changes happen on the parent, animations happen on the child
 
 ---
 
@@ -104,17 +135,36 @@ Create this exact hierarchy in your World Menu scene:
 4. **Configure SimpleAnimationSequencer:**
    ```
    Level Animation Groups: [Configure each level completion]
-   Animation State Name: "Line"
-   Idle State Name: "Line_Idle"
-   Drawn State Name: "Line_Drawn"
-   Delay Between Animations: 0
+   
+   Line Animation Settings:
+   ├── Line Animation State Name: "Line"
+   ├── Line Idle State Name: "Line_Idle"
+   └── Line Drawn State Name: "Line_drawn"
+   
+   Bump Animation Settings:
+   ├── Bump Animation State Name: "Drawing"
+   ├── Bump Idle State Name: "Hidden"
+   └── Bump Drawn State Name: "Drawn"
+   
+   Bump Color Settings:
+   ├── Done Color: Green (completed levels)
+   ├── Locked Color: Gray (future levels)
+   ├── Unlocked Color: White (current level)
+   └── Color Fade Duration: 1.0 (seconds)
+   
+   Final Completion Visuals:
+   └── Final Completion Sprites: [Drag additional sprites for final completion]
+   
+   Timing Settings:
+   └── Delay Between Animations: 0
    ```
    
    **For each Level Group:**
    ```
    Level Number: 1, 2, 3, 4, 5
    Level Name: "Level 1", "Level 2", etc.
-   Animators: [Drag sprites for THIS level completion]
+   Line Animators: [Drag line sprites for THIS level completion]
+   Bump Animator: [Drag bump CHILD (with Animator) for THIS level completion]
    ```
 
 #### **🔘 LevelBump Setup:**
@@ -155,17 +205,20 @@ Configure each level completion separately:
 Level Group 0:
 ├── Level Number: 1
 ├── Level Name: "Level 1"
-└── Animators: [Square1, Square2, Square3, LevelBump1]
+├── Line Animators: [Square1, Square2, Square3]
+└── Bump Animator: [LevelBump1_Animator] (the CHILD with Animator)
 
 Level Group 1:  
 ├── Level Number: 2
 ├── Level Name: "Level 2"
-└── Animators: [Square4, Square5, LevelBump2]
+├── Line Animators: [Square4, Square5]
+└── Bump Animator: [LevelBump2_Animator] (the CHILD with Animator)
 
 Level Group 2:
 ├── Level Number: 3
-├── Level Name: "Level 3" 
-└── Animators: [Square6, Square7, Square8, Square9, LevelBump3]
+├── Level Name: "Level 3"
+├── Line Animators: [Square6, Square7, Square8, Square9] 
+└── Bump Animator: [LevelBump3_Animator] (the CHILD with Animator)
 
 ... (continue for each level)
 ```
@@ -175,22 +228,71 @@ Level Group 2:
 ## 🎮 How It All Works
 
 ### **Game Flow:**
-1. **Scene Loads** → All sprites start in idle state (Line_Idle)
-2. **GameManager** loads saved progress 
+1. **Scene Loads** → All sprites start in idle/hidden state
+2. **GameManager** loads saved progress:
+   - **Completed levels**: Lines + bumps instantly appear drawn (green bumps)
+   - **Current level**: Lines instantly appear drawn (no bump yet)
+   - **Fresh Level 1 start**: Wait 3 seconds → draw level 1 lines (no bump)
+   - **After Reset**: Immediately draw level 1 lines (no delay)
 3. **Player approaches current level bump** → "Press SPACE to start" appears
 4. **Player completes level** → returns to world menu
-5. **Next line animates** (Line animation) → new level becomes available
-6. **After animation** → sprites return to idle state
+5. **Level completion sequence**:
+   - **Completed level bump**: Animates and turns green (done)
+   - **Next level lines**: Draw sequentially (Line_Idle → Line → Line_drawn)
+   - **Next level bump**: Color fades from gray to white (unlocked)
+   - **Next level bump animation**: Stays hidden until that level is completed
+6. **Progressive drawing** → Only draw up to current progress, bumps only after completion
 
-### **Animation Sequence:**
+### **Animation Sequences:**
+
+#### **Scene Load (Level 1):**
+```
+Scene loads → Wait 3 seconds →
+Square1: Line_Idle → Line → Line_drawn
+Square2: Line_Idle → Line → Line_drawn  
+Square3: Line_Idle → Line → Line_drawn
+(Level 1 bump stays hidden until level is completed)
+```
+
+#### **Level 1 Completion:**
 ```
 Player completes Level 1 → PlayLevelCompletionAnimation(1) →
-Square1: Line_Idle → Line → Line_Drawn
-Square2: Line_Idle → Line → Line_Drawn  
-Square3: Line_Idle → Line → Line_Drawn
-LevelBump1: Line_Idle → Line → Line_Drawn
-(Perfect sync, permanent progress!)
+
+Phase 1 - Complete Level 1:
+LevelBump1: Hidden → Drawing → Drawn + Color: Gray → Green
+(Level 1 lines already drawn - no redraw needed)
+
+Phase 2 - Prepare Level 2 (PARALLEL):
+├── Square4: Line_Idle → Line → Line_drawn
+├── Square5: Line_Idle → Line → Line_drawn  
+└── Level2Bump: Color fade Gray → White (SIMULTANEOUS)
+
+(Smooth parallel flow - lines and colors animate together!)
 ```
+
+#### **Level 5 Completion (Final):**
+```
+Player completes Level 5 → PlayLevelCompletionAnimation(5) →
+
+Phase 1 - Complete Level 5:
+LevelBump5: Hidden → Drawing → Drawn + Color: Gray → Green
+(NO level 5 lines redraw - they're already drawn!)
+
+Phase 2 - Final Completion Visuals:
+FinalSprite1: Line_Idle → Line → Line_drawn
+FinalSprite2: Line_Idle → Line → Line_drawn
+FinalSprite3: Line_Idle → Line → Line_drawn
+(Visual completion - no more levels, just celebration!)
+```
+
+### **🎨 Visual Result:**
+- **Progressive line drawing**: Lines draw up to current progress (no further)
+- **Bump revelation**: Bumps only appear after their level is completed
+- **Color coding**: 
+  - **Gray bumps**: Future locked levels (hidden until lines reach them)
+  - **White bump**: Current level available to play (lines drawn, bump hidden)
+  - **Green bumps**: Completed levels (lines + bump both visible)
+  - **Smooth progression**: Lines lead the way, bumps confirm completion
 
 ---
 
@@ -203,20 +305,38 @@ LevelBump1: Line_Idle → Line → Line_Drawn
 4. **Walk to bump** → see "Press SPACE" prompt
 
 ### **Debug Methods Available:**
-- **GameManager**: "Complete Current Level", "Reset Progress"
-- **WorldLevelManager**: "Force Progress Animation", "Show Current Progress", "Reset World"
-- **SimpleAnimationSequencer**: "Test Play Level 1", "Test Play Level 2", "Debug Level Groups", "Test Reset"
+- **GameManager**: "Complete Current Level", "Reset Progress", "Complete Level 5" *(for testing final completion)*
+- **WorldLevelManager**: "Force Progress Animation", "Show Current Progress", "Reset World", "Test Complete Then Reset"
 
 ---
 
 ## ✅ Troubleshooting
 
 ### **Animations Not Playing:**
-- Check state names: "Line", "Line_Idle", "Line_Drawn" 
+- **Line sprites**: Check state names "Line", "Line_Idle", "Line_drawn" 
+- **Bump sprites**: Check state names "Drawing", "Hidden", "Drawn"
 - Verify Level Numbers are set correctly (1, 2, 3, 4, 5)
 - Use "Debug Level Groups" to check your setup
 - Ensure animation clips are properly assigned
-- Make sure "Line_Idle" is set as the default state in Animator
+- Make sure default states are set: "Line_Idle" for lines, "Hidden" for bumps
+
+### **Animation Jittering/Flickering:**
+- This is fixed with improved timing in the animation system
+- If still occurring, check animation clip settings and ensure smooth transitions
+- Make sure "Line_drawn" state has proper setup with final frame
+
+### **Final Completion Visuals Not Playing:**
+- Check that **Final Completion Sprites array** is populated in SimpleAnimationSequencer
+- Use **GameManager → "Complete Level 5"** to test the complete flow
+- Verify **MaxLevels is set correctly** in GameManager (should be 5)
+- Check debug logs for "Just completed the final level" message
+
+### **Colors Not Changing:**
+- Verify **parent GameObjects** of bump animators have **SpriteRenderer** components
+- Check parent-child structure: Parent (SpriteRenderer) → Child (Animator)
+- Check "Test Update Bump Colors" to manually trigger color update
+- Ensure GameManager.Instance is available when scene loads
+- Verify Level Numbers in Level Groups match expected values
 
 ### **Level Bumps Not Responding:**
 - Verify player has "Player" tag
@@ -224,8 +344,13 @@ LevelBump1: Line_Idle → Line → Line_Drawn
 - Confirm Level Numbers are set correctly (1-5)
 
 ### **Progress Not Saving:**
-- GameManager persists between scenes automatically
+- GameManager persists between scenes automatically  
 - Progress saves to PlayerPrefs automatically
+
+### **Reset Not Working:**
+- GameManager "Reset Progress" automatically resets both game data AND animation states
+- If animations don't reset, check that WorldLevelManager is listening to OnProgressReset event
+- Test with "Test Complete Then Reset" method
 
 ---
 
