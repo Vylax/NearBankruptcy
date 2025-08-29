@@ -8,11 +8,10 @@ public class LevelBump : MonoBehaviour
     [Header("Interaction Settings")]
     [SerializeField] private float interactionRange = 2f;
     [SerializeField] private LayerMask playerLayerMask = 1;
-    [SerializeField] private KeyCode interactionKey = KeyCode.Space;
+    [SerializeField] private KeyCode interactionKey = KeyCode.F;
     
     [Header("UI Settings")]
-    [SerializeField] private string promptText = "Press SPACE to start";
-    [SerializeField] private GUIStyle promptStyle;
+    [SerializeField] private Texture2D promptSprite;
     
     [Header("Scene Management")]
     [SerializeField] private string levelSceneName = "";
@@ -31,6 +30,17 @@ public class LevelBump : MonoBehaviour
         if (playerObj != null)
         {
             player = playerObj.transform;
+            Debug.Log($"LevelBump {levelNumber}: Found player: {playerObj.name}");
+        }
+        else
+        {
+            Debug.LogWarning($"LevelBump {levelNumber}: Player with 'Player' tag not found! Make sure your player GameObject has the 'Player' tag.");
+        }
+        
+        // Debug current level at startup
+        if (GameManager.Instance != null)
+        {
+            Debug.Log($"LevelBump {levelNumber}: GameManager current level is {GameManager.Instance.CurrentLevel}");
         }
         
         // Subscribe to game manager events
@@ -38,15 +48,6 @@ public class LevelBump : MonoBehaviour
         {
             GameManager.Instance.OnLevelChanged += OnLevelChanged;
             OnLevelChanged(GameManager.Instance.CurrentLevel);
-        }
-        
-        // Setup default GUI style if not set
-        if (promptStyle == null)
-        {
-            promptStyle = new GUIStyle();
-            promptStyle.fontSize = 24;
-            promptStyle.normal.textColor = Color.white;
-            promptStyle.alignment = TextAnchor.MiddleCenter;
         }
     }
     
@@ -81,6 +82,21 @@ public class LevelBump : MonoBehaviour
         if (playerInRange && !wasInRange)
         {
             OnPlayerEnterRange();
+            
+            // Debug log when entering range (only once, not every frame)
+            int currentLevel = GameManager.Instance?.CurrentLevel ?? -1;
+            if (canInteract)
+            {
+                Debug.Log($"LevelBump {levelNumber}: ✅ Showing interaction sprite (Current level: {currentLevel})");
+            }
+            else if (levelNumber > currentLevel)
+            {
+                Debug.Log($"LevelBump {levelNumber}: 🔒 This level is locked (Current level: {currentLevel})");
+            }
+            else if (levelNumber < currentLevel)
+            {
+                Debug.Log($"LevelBump {levelNumber}: ✅ This level is already completed (Current level: {currentLevel})");
+            }
         }
         else if (!playerInRange && wasInRange)
         {
@@ -151,21 +167,18 @@ public class LevelBump : MonoBehaviour
     
     private void OnGUI()
     {
-        if (!showPrompt) return;
+        if (!showPrompt || promptSprite == null) return;
         
-        // Calculate position for bottom of screen
-        float boxWidth = 300f;
-        float boxHeight = 60f;
-        float x = (Screen.width - boxWidth) / 2f;
-        float y = Screen.height - boxHeight - 50f;
+        // Calculate sprite dimensions and position for bottom of screen
+        float spriteWidth = promptSprite.width;
+        float spriteHeight = promptSprite.height;
+        float x = (Screen.width - spriteWidth) / 2f;
+        float y = Screen.height - spriteHeight - 50f;
         
-        Rect promptRect = new Rect(x, y, boxWidth, boxHeight);
+        Rect spriteRect = new Rect(x, y, spriteWidth, spriteHeight);
         
-        // Draw background box
-        GUI.Box(promptRect, "");
-        
-        // Draw text
-        GUI.Label(promptRect, promptText, promptStyle);
+        // Draw the sprite texture
+        GUI.DrawTexture(spriteRect, promptSprite);
     }
     
     private void OnDrawGizmosSelected()

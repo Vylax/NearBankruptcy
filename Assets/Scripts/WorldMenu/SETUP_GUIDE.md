@@ -178,7 +178,8 @@ Create this exact hierarchy in your World Menu scene:
    LevelBump4: Level Number = 4, Level Scene Name = "Level4"
    LevelBump5: Level Number = 5, Level Scene Name = "Level5"
    
-   All: Interaction Range = 3
+   All: Interaction Range = 3, Interaction Key = F
+   Prompt Sprite: [Drag your custom interaction sprite here]
    ```
 
 #### **🎯 Player Setup:**
@@ -234,7 +235,7 @@ Level Group 2:
    - **Current level**: Lines instantly appear drawn (no bump yet)
    - **Fresh Level 1 start**: Wait 3 seconds → draw level 1 lines (no bump)
    - **After Reset**: Immediately draw level 1 lines (no delay)
-3. **Player approaches current level bump** → "Press SPACE to start" appears
+3. **Player approaches current level bump** → Custom interaction sprite appears
 4. **Player completes level** → returns to world menu
 5. **Level completion sequence**:
    - **Completed level bump**: Animates and turns green (done)
@@ -283,6 +284,8 @@ FinalSprite1: Line_Idle → Line → Line_drawn
 FinalSprite2: Line_Idle → Line → Line_drawn
 FinalSprite3: Line_Idle → Line → Line_drawn
 (Visual completion - no more levels, just celebration!)
+
+✅ Fixed: Level 5 completion now correctly triggers final visuals instead of attempting to draw "level 6" content
 ```
 
 ### **🎨 Visual Result:**
@@ -302,11 +305,11 @@ FinalSprite3: Line_Idle → Line → Line_drawn
 1. **Play the scene**
 2. **GameManager** → Right-click → "Complete Current Level"
 3. **Watch line draw** to next bump perfectly!
-4. **Walk to bump** → see "Press SPACE" prompt
+4. **Walk to bump** → see interaction sprite
 
 ### **Debug Methods Available:**
 - **GameManager**: "Complete Current Level", "Reset Progress", "Complete Level 5" *(for testing final completion)*
-- **WorldLevelManager**: "Force Progress Animation", "Show Current Progress", "Reset World", "Test Complete Then Reset"
+- **SimpleAnimationSequencer**: "Debug Level Groups" *(for verifying setup)*
 
 ---
 
@@ -330,6 +333,8 @@ FinalSprite3: Line_Idle → Line → Line_drawn
 - Use **GameManager → "Complete Level 5"** to test the complete flow
 - Verify **MaxLevels is set correctly** in GameManager (should be 5)
 - Check debug logs for "Just completed the final level" message
+- **Level 5 Logic**: Level 5 completion is handled separately from other levels to ensure proper final completion flow
+- Level 5 bump should turn green (done color) when final completion visuals start
 
 ### **Colors Not Changing:**
 - Verify **parent GameObjects** of bump animators have **SpriteRenderer** components
@@ -340,8 +345,23 @@ FinalSprite3: Line_Idle → Line → Line_drawn
 
 ### **Level Bumps Not Responding:**
 - Verify player has "Player" tag
-- Check Collider2D is set as Trigger
+- Check Collider2D is set as Trigger  
 - Confirm Level Numbers are set correctly (1-5)
+
+### **Interaction Sprite Not Showing:**
+- **Critical**: Make sure your player GameObject has the **"Player" tag**
+- **Critical**: Make sure you've assigned a **Prompt Sprite** (Texture2D) in the LevelBump Inspector
+- Check that player is within Interaction Range (adjust in Inspector if needed)
+- **Level Logic**: Only the CURRENT level bump shows the interaction sprite:
+  - If current level = 1 → Only Level 1 bump shows interaction sprite
+  - If current level = 2 → Only Level 2 bump shows interaction sprite
+  - Other bumps show nothing (locked or completed levels)
+- Check Console for helpful debug messages:
+  - ✅ "Showing interaction sprite" = Working correctly
+  - 🔒 "This level is locked" = Walk to current level bump instead  
+  - ✅ "This level is already completed" = Walk to current level bump instead
+- **Sprite Requirements**: Use any Texture2D asset (PNG, JPG, etc.) - the system will display it at native size
+- **Changed**: Now uses **F key** instead of Space to avoid accidental level loading when jumping
 
 ### **Progress Not Saving:**
 - GameManager persists between scenes automatically  
@@ -350,7 +370,9 @@ FinalSprite3: Line_Idle → Line → Line_drawn
 ### **Reset Not Working:**
 - GameManager "Reset Progress" automatically resets both game data AND animation states
 - If animations don't reset, check that WorldLevelManager is listening to OnProgressReset event
-- Test with "Test Complete Then Reset" method
+- **Fixed**: Reset now properly clears Level 5 completion tracking to prevent final completion sprites from playing during reset
+- Only Level 1 lines should draw after reset (no delay)
+- Final completion sprites and Level 5 content should NOT appear during reset
 
 ---
 

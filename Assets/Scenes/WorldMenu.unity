@@ -479,7 +479,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelGroups:
   - levelNumber: 1
-    levelName: 
+    levelName: Level 1
     lineAnimators:
     - {fileID: 312095828}
     - {fileID: 1575047782}
@@ -487,7 +487,7 @@ MonoBehaviour:
     - {fileID: 1175399295}
     bumpAnimator: {fileID: 953347812}
   - levelNumber: 2
-    levelName: 
+    levelName: Level 2
     lineAnimators:
     - {fileID: 1317620430}
     - {fileID: 1171237674}
@@ -543,6 +543,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1643276370}
     m_Modifications:
+    - target: {fileID: 45352730548921104, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
+      propertyPath: levelNumber
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 45352730548921104, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
+      propertyPath: levelSceneName
+      value: Level2
+      objectReference: {fileID: 0}
     - target: {fileID: 1138282955029361322, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.1829028
@@ -1684,6 +1692,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 419188576}
     m_Modifications:
+    - target: {fileID: 45352730548921104, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
+      propertyPath: levelNumber
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 45352730548921104, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
+      propertyPath: levelSceneName
+      value: Level3
+      objectReference: {fileID: 0}
+    - target: {fileID: 45352730548921104, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
+      propertyPath: interactionRange
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1138282955029361322, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.817097
@@ -7257,6 +7277,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1238969047}
     m_Modifications:
+    - target: {fileID: 45352730548921104, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
+      propertyPath: levelNumber
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 45352730548921104, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
+      propertyPath: levelSceneName
+      value: Level5
+      objectReference: {fileID: 0}
     - target: {fileID: 1138282955029361322, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 12.817097
@@ -8697,6 +8725,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1985844494}
     m_Modifications:
+    - target: {fileID: 45352730548921104, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
+      propertyPath: levelNumber
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 45352730548921104, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
+      propertyPath: levelSceneName
+      value: Level4
+      objectReference: {fileID: 0}
     - target: {fileID: 1138282955029361322, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 7.817097
@@ -10430,6 +10466,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1643999524}
     m_Modifications:
+    - target: {fileID: 45352730548921104, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
+      propertyPath: promptText
+      value: Press F to start
+      objectReference: {fileID: 0}
+    - target: {fileID: 45352730548921104, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
+      propertyPath: promptSprite
+      value: 
+      objectReference: {fileID: 2800000, guid: 75e9886d96441584c8ccf39fc61dfee8, type: 3}
+    - target: {fileID: 45352730548921104, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
+      propertyPath: interactionKey
+      value: 102
+      objectReference: {fileID: 0}
+    - target: {fileID: 45352730548921104, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
+      propertyPath: levelSceneName
+      value: Level1
+      objectReference: {fileID: 0}
     - target: {fileID: 1138282955029361322, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9.5
