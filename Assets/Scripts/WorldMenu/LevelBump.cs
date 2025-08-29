@@ -77,6 +77,13 @@ public class LevelBump : MonoBehaviour
         // Update prompt visibility
         bool canInteract = GameManager.Instance != null && 
                           GameManager.Instance.CurrentLevel == levelNumber;
+        
+        // Special case: Level 5 cannot be interacted with if it's fully completed (including final visuals)
+        if (levelNumber == 5 && GameManager.Instance != null && GameManager.Instance.IsFinalLevelFullyCompleted)
+        {
+            canInteract = false;
+        }
+        
         showPrompt = playerInRange && canInteract;
         
         // Optional: Trigger events when entering/exiting range
@@ -97,6 +104,10 @@ public class LevelBump : MonoBehaviour
             else if (levelNumber < currentLevel)
             {
                 Debug.Log($"LevelBump {levelNumber}: ✅ This level is already completed (Current level: {currentLevel})");
+            }
+            else if (levelNumber == 5 && GameManager.Instance.IsFinalLevelFullyCompleted)
+            {
+                Debug.Log($"LevelBump {levelNumber}: 🏆 Final level fully completed - interaction disabled until reset");
             }
         }
         else if (!playerInRange && wasInRange)

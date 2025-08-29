@@ -669,6 +669,12 @@ public class SimpleAnimationSequencer : MonoBehaviour
         // SEPARATE LEVEL 5 LOGIC: Set Level 5 bump to done color when final visuals start
         SetLevel5BumpToDoneColor();
         
+        // Mark Level 5 as fully completed - this disables further interaction with Level 5 bump
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.MarkFinalLevelFullyCompleted();
+        }
+        
         if (finalCompletionSprites == null || finalCompletionSprites.Length == 0)
         {
             Debug.LogWarning("SimpleAnimationSequencer: No final completion sprites assigned! Add sprites to Final Completion Sprites array.");
