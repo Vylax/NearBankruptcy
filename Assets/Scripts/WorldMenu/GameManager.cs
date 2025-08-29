@@ -108,12 +108,4 @@ public class GameManager : MonoBehaviour
     {
         CompleteLevel(currentLevel);
     }
-    
-    [ContextMenu("Complete Level 5")]
-    public void DebugCompleteLevel5()
-    {
-        SetCurrentLevel(5);
-        CompleteLevel(5);
-        Debug.Log("GameManager: Set to level 5 and completed it - should trigger final completion visuals");
-    }
 }
