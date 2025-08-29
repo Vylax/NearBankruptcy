@@ -285,6 +285,21 @@ public class SimpleAnimationSequencer : MonoBehaviour
                 }
             }
         }
+        
+        // ALSO RESET FINAL COMPLETION SPRITES
+        if (finalCompletionSprites != null)
+        {
+            foreach (var animator in finalCompletionSprites)
+            {
+                if (animator != null)
+                {
+                    animator.Play(lineIdleStateName, 0, 0f);
+                    animator.speed = 1f;
+                    initializedCount++;
+                }
+            }
+        }
+        
         Debug.Log($"SimpleAnimationSequencer: {initializedCount} sprites initialized to idle state");
     }
     
@@ -569,6 +584,35 @@ public class SimpleAnimationSequencer : MonoBehaviour
     }
     
     /// <summary>
+    /// SEPARATE LEVEL 5 COMPLETION LOGIC - Set Level 5 bump to done color when completed
+    /// </summary>
+    private void SetLevel5BumpToDoneColor()
+    {
+        if (GameManager.Instance == null || levelGroups == null) return;
+        
+        // Find Level 5 group
+        LevelAnimationGroup level5Group = null;
+        foreach (var group in levelGroups)
+        {
+            if (group?.levelNumber == 5)
+            {
+                level5Group = group;
+                break;
+            }
+        }
+        
+        if (level5Group?.bumpAnimator != null)
+        {
+            SpriteRenderer spriteRenderer = level5Group.bumpAnimator.transform.parent?.GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.color = doneColor;
+                Debug.Log($"Set Level 5 bump to done color (separate from main logic)");
+            }
+        }
+    }
+    
+    /// <summary>
     /// Fade bump color from one color to another
     /// </summary>
     private IEnumerator FadeBumpColor(Animator bumpAnimator, Color fromColor, Color toColor)
@@ -621,6 +665,9 @@ public class SimpleAnimationSequencer : MonoBehaviour
     private IEnumerator PlayFinalCompletionVisuals()
     {
         Debug.Log("SimpleAnimationSequencer: Starting final completion visuals...");
+        
+        // SEPARATE LEVEL 5 LOGIC: Set Level 5 bump to done color when final visuals start
+        SetLevel5BumpToDoneColor();
         
         if (finalCompletionSprites == null || finalCompletionSprites.Length == 0)
         {
