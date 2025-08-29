@@ -268,6 +268,9 @@ public class WorldLevelManager : MonoBehaviour
     {
         Debug.Log("WorldLevelManager: Progress reset - resetting animation states and drawing level 1");
         
+        // RESET THE COMPLETED LEVEL TRACKING - this is crucial!
+        currentCompletedLevel = -1;
+        
         // Reset all animation states back to idle and immediately start level 1 drawing
         if (progressAnimationSequencer != null)
         {
