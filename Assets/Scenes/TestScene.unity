@@ -441,6 +441,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bullet (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 2400190280135442440, guid: cda1b206552ba7142aba50cfbdf5deec, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -497,6 +501,10 @@ PrefabInstance:
     - target: {fileID: 2400190280135442440, guid: cda1b206552ba7142aba50cfbdf5deec, type: 3}
       propertyPath: m_Name
       value: Bullet
+      objectReference: {fileID: 0}
+    - target: {fileID: 2400190280135442440, guid: cda1b206552ba7142aba50cfbdf5deec, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
