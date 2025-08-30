@@ -77,6 +77,9 @@ public class GameManager : MonoBehaviour
         currentLevel = 1;
         isFinalLevelFullyCompleted = false; // Reset final completion flag
         
+        // Reset money
+        MoneyManager.ResetMoney();
+
         // Notify listeners that progress has been reset
         OnProgressReset?.Invoke();
         OnLevelChanged?.Invoke(currentLevel);
