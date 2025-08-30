@@ -20,11 +20,11 @@ public class CameraController : MonoBehaviour
     public float movingSmoothTime = 0.25f;
 
     [Tooltip("How quickly the camera recenters horizontally on the target when it's idle. Lower values are faster.")]
-    [Range(0.02f, 5f)]
+    [Range(0.02f, 5.0f)]
     public float idleSmoothTimeX = 0.5f;
 
     [Tooltip("How quickly the camera recenters vertically on the target when it's idle. Lower values are faster.")]
-    [Range(0.02f, 5f)]
+    [Range(0.02f, 1.0f)]
     public float idleSmoothTimeY = 0.5f;
 
     [Tooltip("The maximum horizontal distance the camera will offset from the target.")]
@@ -33,6 +33,9 @@ public class CameraController : MonoBehaviour
     [Tooltip("A fixed vertical offset from the target's position.")]
     public float verticalOffset = 1f;
 
+    [Tooltip("The distance the player must move horizontally from a standstill before the camera's look-ahead is triggered.")]
+    public float lookAheadDeadZone = 1f;
+
     [Tooltip("How quickly the camera's horizontal offset is applied when the player changes direction.")]
     public float offsetChangeSpeed = 5f;
 
@@ -40,9 +43,19 @@ public class CameraController : MonoBehaviour
     private float cameraVelocityX = 0f;
     private float cameraVelocityY = 0f;
     private float currentHorizontalOffset = 0f;
+    private float deadZoneAnchorX; // The position from which the dead zone is measured.
 
     // A small threshold to prevent the camera from shifting due to minor physics jitter when stationary.
     private const float VELOCITY_THRESHOLD = 0.1f;
+
+    void Start()
+    {
+        // Initialize the dead zone anchor to the target's starting position.
+        if (target != null)
+        {
+            deadZoneAnchorX = target.position.x;
+        }
+    }
 
     void LateUpdate()
     {
@@ -57,12 +70,23 @@ public class CameraController : MonoBehaviour
         bool isMoving = Mathf.Abs(playerRigidbody.linearVelocity.x) > VELOCITY_THRESHOLD;
 
         // 1. DETERMINE THE TARGET HORIZONTAL OFFSET
-        // This is the desired offset based on the player's current movement direction.
         float targetHorizontalOffset = 0f;
         if (isMoving)
         {
-            // Player is moving, so we want the camera to offset in the direction of movement.
-            targetHorizontalOffset = horizontalOffset * Mathf.Sign(playerRigidbody.linearVelocity.x);
+            // Player is moving. Check if they have moved past the dead zone from our last stationary point.
+            if (Mathf.Abs(target.position.x - deadZoneAnchorX) > lookAheadDeadZone)
+            {
+                // Trigger the look-ahead offset.
+                targetHorizontalOffset = horizontalOffset * Mathf.Sign(playerRigidbody.linearVelocity.x);
+            }
+            // If inside the dead zone, targetHorizontalOffset remains 0, keeping the camera centered.
+        }
+        else
+        {
+            // Player is idle. Reset the anchor for the dead zone to their current position.
+            // The next movement will be measured from this spot.
+            deadZoneAnchorX = target.position.x;
+            targetHorizontalOffset = 0f;
         }
 
         // 2. SMOOTHLY INTERPOLATE THE CURRENT OFFSET
