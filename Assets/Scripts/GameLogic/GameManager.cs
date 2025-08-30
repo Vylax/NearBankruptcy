@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -100,4 +101,29 @@ public class GameManager : MonoBehaviour
     }
 
     #endregion
+
+    /// <summary>
+    ///  Called when a level is started from a levelbump
+    /// </summary>
+    public void LevelStarted()
+    {
+        GetComponent<LevelManager>().StartNewLevel(300); // TODO un-hardcode the level duration and adapt it to the current level
+    }
+
+    public void Die()
+    {
+        StartCoroutine(DieCoroutine());
+    }
+
+    private IEnumerator DieCoroutine()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("PostGameSummary");
+        int coinsDelta = GetComponent<PostGameSummary>().ComputeSummary(false, 0);
+
+        // Wait a bit then when summary has displayed for a bit update money, if not bankrupt then return to worldmenu otherwise bankruptcy is handled on its own
+        yield return new WaitForSeconds(5f);
+
+        // Update money
+        MoneyManager.AlterMoney(coinsDelta);
+    }
 }

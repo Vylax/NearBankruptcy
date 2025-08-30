@@ -135,6 +135,8 @@ public class LevelBump : MonoBehaviour
         {
             Debug.Log($"Starting Level {levelNumber}");
         }
+
+        GameManager.Instance.LevelStarted();
     }
     
     private void OnLevelChanged(int currentLevel)
