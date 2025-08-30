@@ -190,7 +190,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 2eced5e89af5c0847a885b9183917e2f, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -214,9 +214,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelNumber: 1
   interactionRange: 2
-  playerLayerMask:
-    serializedVersion: 2
-    m_Bits: 1
   interactionKey: 102
   promptSprite: {fileID: 2800000, guid: 75e9886d96441584c8ccf39fc61dfee8, type: 3}
   verticalOffset: -1
