@@ -83,6 +83,13 @@ public class LevelBump : MonoBehaviour
             canInteract = false;
         }
         
+        // Disable interaction during animations
+        WorldLevelManager worldManager = FindObjectOfType<WorldLevelManager>();
+        if (worldManager != null && worldManager.IsPlayingAnimation)
+        {
+            canInteract = false;
+        }
+        
         showPrompt = playerInRange && canInteract;
         
         // Optional: Trigger events when entering/exiting range

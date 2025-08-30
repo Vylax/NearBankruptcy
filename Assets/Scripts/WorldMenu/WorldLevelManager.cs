@@ -167,10 +167,13 @@ public class WorldLevelManager : MonoBehaviour
                 // Also set current level lines to drawn (they should have been drawn during previous level completion)
                 progressAnimationSequencer.SetCurrentLevelLinesToDrawnState(currentLevel);
                 Debug.Log($"World initialized - current level {currentLevel} lines shown as drawn (were drawn when previous level completed)");
+                
+                // ALSO: Check if level 1 lines need to be drawn (using flag-based approach)
+                progressAnimationSequencer.DrawCurrentLevelLinesWithDelay();
             }
             else if (currentLevel == 1)
             {
-                // For level 1, always check if lines should be drawn with delay (only first time)
+                // For level 1, check if lines need to be drawn (using flag-based approach)
                 Debug.Log("World initialized - on level 1, checking if lines need to be drawn");
                 progressAnimationSequencer.DrawCurrentLevelLinesWithDelay();
             }

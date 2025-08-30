@@ -45,13 +45,31 @@ public class SimpleAnimationSequencer : MonoBehaviour
     // Events
     public System.Action OnSequenceComplete;
     
+    // Level 1 tracking - using PlayerPrefs for persistence across scene loads
+    private const string LEVEL1_LINES_DRAWN_KEY = "Level1LinesDrawn";
+    
     private void Start()
     {
         // Initialize all sprites to idle state on scene start
         InitializeToIdleState();
         
+        // If level 1 lines have been drawn before, set them to drawn state immediately
+        if (PlayerPrefs.GetInt(LEVEL1_LINES_DRAWN_KEY, 0) == 1)
+        {
+            SetCurrentLevelLinesToDrawnState(1);
+            Debug.Log("SimpleAnimationSequencer: Level 1 lines already drawn (saved in PlayerPrefs) - setting to drawn state immediately");
+        }
+        
         // Set initial bump colors based on level status
         Invoke(nameof(UpdateBumpColors), 0.1f); // Small delay to ensure GameManager is ready
+    }
+    
+    private void OnApplicationQuit()
+    {
+        // Reset level 1 lines drawn state when game closes
+        PlayerPrefs.SetInt(LEVEL1_LINES_DRAWN_KEY, 0);
+        PlayerPrefs.Save();
+        Debug.Log("SimpleAnimationSequencer: Game closing - reset level 1 lines PlayerPrefs");
     }
     
     /// <summary>
@@ -159,22 +177,18 @@ public class SimpleAnimationSequencer : MonoBehaviour
         // Wait 3 seconds after scene load (only for fresh start, not after reset)
         yield return new WaitForSeconds(3f);
         
-        // Only draw level 1 lines if this is the first time (they haven't been drawn before)
-        if (currentLevel == 1)
+        // Only draw level 1 lines if they have never been drawn before (check PlayerPrefs)
+        if (PlayerPrefs.GetInt(LEVEL1_LINES_DRAWN_KEY, 0) == 0)
         {
-            if (!AreLevelLinesDrawn(1))
-            {
-                Debug.Log($"SimpleAnimationSequencer: Drawing level 1 lines for the FIRST time (after 3s delay)");
-                yield return StartCoroutine(PlayLevelLinesOnly(currentLevel));
-            }
-            else
-            {
-                Debug.Log($"SimpleAnimationSequencer: Level 1 lines already drawn - skipping animation");
-            }
+            Debug.Log($"SimpleAnimationSequencer: Drawing level 1 lines for the FIRST time ever (after 3s delay)");
+            yield return StartCoroutine(PlayLevelLinesOnly(1));
+            PlayerPrefs.SetInt(LEVEL1_LINES_DRAWN_KEY, 1);
+            PlayerPrefs.Save();
+            Debug.Log($"SimpleAnimationSequencer: Level 1 lines drawn - saved to PlayerPrefs");
         }
         else
         {
-            Debug.Log($"SimpleAnimationSequencer: Not level 1 - lines will be drawn when CompleteLevel() is called");
+            Debug.Log($"SimpleAnimationSequencer: Level 1 lines already drawn (saved in PlayerPrefs) - skipping animation");
         }
     }
     
@@ -250,11 +264,18 @@ public class SimpleAnimationSequencer : MonoBehaviour
         InitializeToIdleState();
         UpdateBumpColors();
         
+        // Reset the level 1 flag so lines will be drawn again
+        PlayerPrefs.SetInt(LEVEL1_LINES_DRAWN_KEY, 0);
+        PlayerPrefs.Save();
+        Debug.Log("SimpleAnimationSequencer: Progress reset - level 1 lines flag reset in PlayerPrefs");
+        
         // After reset, level 1 lines need to be drawn again (since it's like starting fresh)
         if (GameManager.Instance != null && GameManager.Instance.CurrentLevel == 1)
         {
             Debug.Log("SimpleAnimationSequencer: Progress reset - will draw level 1 lines immediately (no delay since it's a reset)");
             StartCoroutine(PlayLevelLinesOnly(1));
+            PlayerPrefs.SetInt(LEVEL1_LINES_DRAWN_KEY, 1);
+            PlayerPrefs.Save();
         }
     }
     
