@@ -20,11 +20,6 @@ public class LevelManager : MonoBehaviour
         timerRunning = false;
     }
 
-    public void ResetLevel()
-    {
-        ElapsedGameTime = 0f;
-    }
-
     public void StartNewLevel(float maxTime)
     {
         ElapsedGameTime = 0f;
@@ -36,6 +31,15 @@ public class LevelManager : MonoBehaviour
     {
         timerRunning = false;
         GameManager.Instance.Die();
+    }
+
+    /// <summary>
+    /// Stops the timer and return the elapsed time when the level was completed.
+    /// </summary>
+    public float LevelCompleteTime()
+    {
+        timerRunning = false;
+        return ElapsedGameTime;
     }
 
     private void Update()

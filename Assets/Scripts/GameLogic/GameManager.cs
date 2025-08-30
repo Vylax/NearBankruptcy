@@ -110,15 +110,24 @@ public class GameManager : MonoBehaviour
         GetComponent<LevelManager>().StartNewLevel(300); // TODO un-hardcode the level duration and adapt it to the current level
     }
 
-    public void Die()
+    public void Win()
     {
-        StartCoroutine(DieCoroutine());
+        float timeLeft = GetComponent<LevelManager>().LevelCompleteTime();
+
+        // Display post-game summary and update money
+        StartCoroutine(PostGameSummaryCoroutine(true, timeLeft));
     }
 
-    private IEnumerator DieCoroutine()
+    public void Die()
+    {
+        // Display post-game summary and update money
+        StartCoroutine(PostGameSummaryCoroutine(false, 0));
+    }
+
+    private IEnumerator PostGameSummaryCoroutine(bool win, float timeLeft)
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene("PostGameSummary");
-        int coinsDelta = GetComponent<PostGameSummary>().ComputeSummary(false, 0);
+        int coinsDelta = GetComponent<PostGameSummary>().ComputeSummary(win, timeLeft);
 
         // Wait a bit then when summary has displayed for a bit update money, if not bankrupt then return to worldmenu otherwise bankruptcy is handled on its own
         yield return new WaitForSeconds(5f);
