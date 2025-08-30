@@ -92,6 +92,7 @@ public class GameManager : MonoBehaviour
 
     #region Bankrupt
 
+    [ContextMenu("Trigger Bankruptcy")]
     public void Bankrupt() {
         ResetProgress();
         MoneyManager.ResetMoney();
