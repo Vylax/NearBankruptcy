@@ -8,6 +8,8 @@ public class LevelManager : MonoBehaviour
 
     private float maxLevelTime = 0f;
 
+    public float TimeLeft => maxLevelTime - ElapsedGameTime;
+
     public void Pause()
     {
         Time.timeScale = 0f;

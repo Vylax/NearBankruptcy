@@ -204,8 +204,54 @@ public class GameManager : MonoBehaviour
     
     #endregion
 
+    [Header("UI Elements")]
+    [SerializeField] private Texture2D goldIcon;
+    [SerializeField] private Texture2D clockIcon;
+
     private void OnGUI()
     {
-        GUILayout.Label($"[Debug] Money: {MoneyManager.Money}");
+        // Money display with gold icon
+        GUI.BeginGroup(new Rect(10, 10, 300, 50));
+        
+        // Money text
+        string moneyText = MoneyManager.Money.ToString();
+        Vector2 moneyTextSize = GUI.skin.label.CalcSize(new GUIContent(moneyText));
+        GUI.Label(new Rect(0, 0, moneyTextSize.x, moneyTextSize.y), moneyText);
+        
+        // Gold icon - center aligned with text
+        if (goldIcon != null)
+        {
+            float iconSize = moneyTextSize.y; // Make icon same height as text
+            float iconY = (moneyTextSize.y - iconSize) / 2; // Center vertically with text
+            GUI.DrawTexture(new Rect(moneyTextSize.x + 5, iconY, iconSize, iconSize), goldIcon);
+        }
+        
+        GUI.EndGroup();
+
+        // Time display with clock icon (only in Level scenes)
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name.StartsWith("Level"))
+        {
+            LevelManager levelManager = GetComponent<LevelManager>();
+            if (levelManager != null)
+            {
+                GUI.BeginGroup(new Rect(10, 60, 300, 50));
+                
+                // Time text
+                int timeLeft = Mathf.Max(0, (int)levelManager.TimeLeft);
+                string timeText = timeLeft.ToString();
+                Vector2 timeTextSize = GUI.skin.label.CalcSize(new GUIContent(timeText));
+                GUI.Label(new Rect(0, 0, timeTextSize.x, timeTextSize.y), timeText);
+                
+                // Clock icon - center aligned with text
+                if (clockIcon != null)
+                {
+                    float iconSize = timeTextSize.y; // Make icon same height as text
+                    float iconY = (timeTextSize.y - iconSize) / 2; // Center vertically with text
+                    GUI.DrawTexture(new Rect(timeTextSize.x + 5, iconY, iconSize, iconSize), clockIcon);
+                }
+                
+                GUI.EndGroup();
+            }
+        }
     }
 }

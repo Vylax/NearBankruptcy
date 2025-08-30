@@ -256,6 +256,13 @@ public class ItemsManager : MonoBehaviour
         if (MoneyManager.Money < price) return;
         if (!HasFreeSlot()) return;
         
+        if (MoneyManager.Money == price)
+        {
+            // close shop if this purchase would bankrupt the player
+            shopIsOpen = false;
+            GameManager.Instance.ResumeGame();
+        }
+
         // Purchase successful
         MoneyManager.RemoveMoney(price);
         purchasedItems.Add(item);
