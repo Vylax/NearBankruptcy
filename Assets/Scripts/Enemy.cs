@@ -13,6 +13,7 @@ public class Enemy : MonoBehaviour
 
     float raycastDistance = 0.8f;
     public LayerMask wallLayer;
+    public LayerMask enemyLayer;
 
     bool isWaiting = false;
 
@@ -22,12 +23,13 @@ public class Enemy : MonoBehaviour
         isWaiting = true;
         yield return new WaitForSeconds(0.5f);
         isWaiting = false;
+        flipSprite();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        moveSpeed = Random.Range(1f, 3f);
     }
 
     // Update is called once per frame
@@ -46,21 +48,25 @@ public class Enemy : MonoBehaviour
 
     bool detectWall()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, MovementDirection, raycastDistance, wallLayer);
-        return hit.collider != null;
+        Vector2 origin = (Vector2)transform.position + (Vector2)MovementDirection.normalized * 0.8f;
+        RaycastHit2D hitWall = Physics2D.Raycast(transform.position, MovementDirection, raycastDistance, wallLayer);
+        RaycastHit2D hitEnemy = Physics2D.Raycast(origin, MovementDirection, raycastDistance - raycastDistance, enemyLayer);
+        return hitWall.collider != null || hitEnemy.collider != null;
     }
 
     bool detectHole()
     {
-        Vector2 origin = (Vector2)transform.position + (Vector2)MovementDirection.normalized * 0.7f;
-        RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, raycastDistance, wallLayer);
-        return hit.collider == null;
+        Vector2 originWall = (Vector2)transform.position + (Vector2)MovementDirection.normalized * 0.7f;
+        Vector2 originEnemy = (Vector2)transform.position + (Vector2)MovementDirection.normalized * 0.8f;
+        RaycastHit2D hitWall = Physics2D.Raycast(originWall, Vector2.down, raycastDistance, wallLayer);
+        RaycastHit2D hitEnemy = Physics2D.Raycast(originEnemy, Vector2.down, raycastDistance, enemyLayer);
+        return hitWall.collider == null && hitEnemy.collider == null;
     }
 
-    // void flipSprite()
-    // {
-    //     spriteRenderer.flipX = movementDirection;
-    // }
+    void flipSprite()
+    {
+        GetComponent<SpriteRenderer>().flipX = !movementDirection;
+    }
 
     void move()
     {
@@ -70,7 +76,6 @@ public class Enemy : MonoBehaviour
         {
             StartCoroutine(Wait());
             movementDirection = !movementDirection;
-            // flipSprite();
         }
 
         Vector3 movement = moveSpeed * Time.fixedDeltaTime * MovementDirection;
