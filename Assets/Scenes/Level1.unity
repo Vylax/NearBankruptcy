@@ -89558,29 +89558,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 615102105309055883, guid: e578bfd05a7218046a4f93f3eb83e863, type: 3}
-      propertyPath: m_BodyType
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1294264374550024871, guid: e578bfd05a7218046a4f93f3eb83e863, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5289000316929025852, guid: e578bfd05a7218046a4f93f3eb83e863, type: 3}
-      propertyPath: collisionLayer.m_Bits
-      value: 64
-      objectReference: {fileID: 0}
     - target: {fileID: 5615857748009189156, guid: e578bfd05a7218046a4f93f3eb83e863, type: 3}
       propertyPath: m_Name
       value: MovingPlatform
-      objectReference: {fileID: 0}
-    - target: {fileID: 5615857748009189156, guid: e578bfd05a7218046a4f93f3eb83e863, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5868468321571431342, guid: e578bfd05a7218046a4f93f3eb83e863, type: 3}
-      propertyPath: m_Layer
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6678176635326132513, guid: e578bfd05a7218046a4f93f3eb83e863, type: 3}
       propertyPath: m_LocalPosition.x

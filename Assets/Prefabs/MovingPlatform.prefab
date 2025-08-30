@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4761745681566433017}
   - component: {fileID: 6081614731101382177}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 9152500577415210096}
   - component: {fileID: 615102105309055883}
   - component: {fileID: 5289000316929025852}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: MovingPlatform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -266,6 +266,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   axis: 1
   speed: 3
+  collisionLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  collisionCheckDistance: 0.1
 --- !u!1 &5868468321571431342
 GameObject:
   m_ObjectHideFlags: 0
@@ -276,7 +280,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7608431739708017682}
   - component: {fileID: 8203907148231427859}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Wall (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
