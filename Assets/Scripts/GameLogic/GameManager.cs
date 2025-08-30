@@ -131,9 +131,17 @@ public class GameManager : MonoBehaviour
         int coinsDelta = GetComponent<PostGameSummary>().ComputeSummary(win, timeLeft);
 
         // Wait a bit then when summary has displayed for a bit update money, if not bankrupt then return to worldmenu otherwise bankruptcy is handled on its own
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(2.5f);
 
         // Update money
         MoneyManager.AlterMoney(coinsDelta);
+
+        // TODO Wait a bit and if the scene wasn't changed to bankruptcy then return to worldmenu
+        yield return new WaitForSeconds(2.5f);
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Bankruptcy")
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("WorldMenu");
+        }
+
     }
 }

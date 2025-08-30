@@ -179,12 +179,14 @@ public class PostGameSummary : MonoBehaviour
     private GUIStyle GetHeaderStyle(bool isWin)
     {
         Color goldColor = new Color(0.941f, 0.769f, 0.275f); // #F0C846
+        Color redColor = new Color(0.914f, 0.357f, 0.357f); // #E95B5B
+        Color greenColor = new Color(0.259f, 0.722f, 0.267f); // #42B844
         return new GUIStyle(GUI.skin.label)
         {
             fontSize = 24,
             fontStyle = FontStyle.Bold,
             alignment = TextAnchor.MiddleCenter,
-            normal = { textColor = isWin ? goldColor : Color.red }
+            normal = { textColor = isWin ? greenColor : redColor }
         };
     }
 
