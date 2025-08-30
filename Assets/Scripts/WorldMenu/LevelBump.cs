@@ -83,6 +83,13 @@ public class LevelBump : MonoBehaviour
             canInteract = false;
         }
         
+        // Disable interaction during animations
+        WorldLevelManager worldManager = FindObjectOfType<WorldLevelManager>();
+        if (worldManager != null && worldManager.IsPlayingAnimation)
+        {
+            canInteract = false;
+        }
+        
         showPrompt = playerInRange && canInteract;
         
         // Optional: Trigger events when entering/exiting range
@@ -135,6 +142,8 @@ public class LevelBump : MonoBehaviour
         {
             Debug.Log($"Starting Level {levelNumber}");
         }
+
+        GameManager.Instance.LevelStarted();
     }
     
     private void OnLevelChanged(int currentLevel)

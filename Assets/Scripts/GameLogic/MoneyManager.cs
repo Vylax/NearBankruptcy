@@ -4,6 +4,18 @@ public static class MoneyManager {
 
     public static int Money => money;
 
+    public static void AlterMoney(int amount)
+    {
+        if(amount >= 0)
+        {
+            AddMoney(amount);
+        }
+        else
+        {
+            RemoveMoney(-amount);
+        }
+    }
+
     public static void AddMoney(int amount) {
         money += amount;
     }
