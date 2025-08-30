@@ -185,6 +185,17 @@ public class LevelBump : MonoBehaviour
         
         // Draw the sprite texture
         GUI.DrawTexture(spriteRect, promptSprite);
+
+        string keyHint = $"Start level {levelNumber}";
+        GUIStyle hintStyle = new GUIStyle(GUI.skin.label)
+        {
+            fontSize = 12,
+            alignment = TextAnchor.MiddleCenter,
+            normal = { textColor = Color.white }
+        };
+
+        Rect hintRect = new Rect(x - 50f, y + spriteHeight + 5f, spriteWidth + 100f, 20f);
+        GUI.Label(hintRect, keyHint, hintStyle);
     }
     
     private void OnDrawGizmosSelected()

@@ -47,17 +47,17 @@ public static class ItemDescriptions
     public static readonly Dictionary<Item, string> Descriptions = new Dictionary<Item, string>
     {
         { Item.None, "Empty slot" },
-        { Item.Dash, "Quick forward dash ability" },
-        { Item.DoubleJump, "Jump again while in mid-air" },
+        { Item.Dash, "Forward dash" },
+        { Item.DoubleJump, "Double jump" },
         { Item.Shield, "Protects from one hit" },
         { Item.SpeedBoost, "Increases movement speed" },
-        { Item.Glider, "Slow fall and glide horizontally" },
-        { Item.SmallSize, "Reduces player hitbox size" },
-        { Item.SlowMotion, "Slows down time when activated" },
-        { Item.ReverseGravity, "Flip gravity direction" },
-        { Item.WallJump, "Jump off walls" },
-        { Item.WalkThroughWalls, "Phase through solid objects" },
-        { Item.DepthStrider, "Move faster through water/liquids" }
+        { Item.Glider, "Slow fall" },
+        { Item.SmallSize, "Reduces player size" },
+        { Item.SlowMotion, "Slows down time for a short period" },
+        { Item.ReverseGravity, "Flip gravity" },
+        { Item.WallJump, "Wall jump" },
+        { Item.WalkThroughWalls, "Phase through some walls" },
+        { Item.DepthStrider, "Swim faster" }
     };
 
     public static string GetDescription(Item item)
@@ -75,6 +75,7 @@ public class ItemsManager : MonoBehaviour
     public Item sellSlot = Item.None;                 // Sell slot
     
     [Header("Shop Management")]
+    public bool shopIsOpen = false;
     public HashSet<Item> purchasedItems = new HashSet<Item>();
     private List<Item> availableItems = new List<Item>();
     
@@ -105,17 +106,48 @@ public class ItemsManager : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log("ItemsManager: Starting initialization");
         InitializeShop();
         CalculateAreas();
+        Debug.Log($"ItemsManager: Initialization complete. Shop slots: [{string.Join(", ", shopSlots)}]");
+        
+        // Subscribe to GameManager reset events
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnProgressReset += ResetShop;
+        }
+    }
+    
+    private void OnDestroy()
+    {
+        // Unsubscribe from events
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnProgressReset -= ResetShop;
+        }
     }
     
     private void InitializeShop()
     {
-        // Get all items except None
-        availableItems = System.Enum.GetValues(typeof(Item))
-            .Cast<Item>()
-            .Where(item => item != Item.None)
-            .ToList();
+        // Get all items except None and randomize order if not already set
+        if (availableItems.Count == 0)
+        {
+            availableItems = System.Enum.GetValues(typeof(Item))
+                .Cast<Item>()
+                .Where(item => item != Item.None)
+                .ToList();
+            
+            // Randomize the order using Unity's Random
+            for (int i = 0; i < availableItems.Count; i++)
+            {
+                Item temp = availableItems[i];
+                int randomIndex = Random.Range(i, availableItems.Count);
+                availableItems[i] = availableItems[randomIndex];
+                availableItems[randomIndex] = temp;
+            }
+            
+            Debug.Log($"ItemsManager: Randomized shop order: [{string.Join(", ", availableItems)}]");
+        }
         
         // Fill initial shop slots
         RefillShopSlots();
@@ -125,6 +157,10 @@ public class ItemsManager : MonoBehaviour
     {
         var unpurchasedItems = availableItems.Where(item => !purchasedItems.Contains(item)).ToList();
         
+        // Remove items that are already in shop slots to avoid duplicates
+        var itemsAlreadyInShop = shopSlots.Where(item => item != Item.None).ToList();
+        unpurchasedItems = unpurchasedItems.Where(item => !itemsAlreadyInShop.Contains(item)).ToList();
+        
         for (int i = 0; i < shopSlots.Length; i++)
         {
             if (shopSlots[i] == Item.None && unpurchasedItems.Count > 0)
@@ -133,6 +169,8 @@ public class ItemsManager : MonoBehaviour
                 unpurchasedItems.RemoveAt(0);
             }
         }
+        
+        Debug.Log($"ItemsManager: Shop refilled. Current shop: [{string.Join(", ", shopSlots)}]");
     }
     
     private void CalculateAreas()
@@ -143,11 +181,13 @@ public class ItemsManager : MonoBehaviour
         // Shop area (top row)
         shopArea = new Rect(startX, 50f, totalWidth, slotSize);
         
-        // Active items area (middle row)
-        activeArea = new Rect(startX, shopArea.y + slotSize + rowSpacing, totalWidth, slotSize);
+        // Active items area (middle row) - increased gap from shop
+        float ownedItemsGap = 60f; // Larger gap to distinguish owned vs shop items
+        activeArea = new Rect(startX, shopArea.y + slotSize + ownedItemsGap, totalWidth, slotSize);
         
-        // Inventory area (bottom row)
-        inventoryArea = new Rect(startX, activeArea.y + slotSize + rowSpacing, totalWidth, slotSize);
+        // Inventory area (bottom row) - slightly more spacing
+        float inventoryGap = 30f; // Bit more space between active and inventory
+        inventoryArea = new Rect(startX, activeArea.y + slotSize + inventoryGap, totalWidth, slotSize);
         
         // Sell slot (right of inventory, vertically centered between inventory and active)
         float sellX = inventoryArea.x + totalWidth + 30f;
@@ -236,8 +276,75 @@ public class ItemsManager : MonoBehaviour
         }
     }
     
+    /// <summary>
+    /// Reset the shop to initial state with new random order
+    /// Called when GameManager.ResetProgress() is invoked
+    /// </summary>
+    public void ResetShop()
+    {
+        Debug.Log("ItemsManager: Resetting shop");
+        
+        // Clear all purchased items
+        purchasedItems.Clear();
+        
+        // Clear all item slots
+        for (int i = 0; i < itemsSlots.Length; i++)
+        {
+            itemsSlots[i] = Item.None;
+        }
+        for (int i = 0; i < inventorySlots.Length; i++)
+        {
+            inventorySlots[i] = Item.None;
+        }
+        for (int i = 0; i < shopSlots.Length; i++)
+        {
+            shopSlots[i] = Item.None;
+        }
+        sellSlot = Item.None;
+        
+        // Clear and re-randomize available items list
+        availableItems.Clear();
+        
+        // Re-initialize shop with new random order
+        InitializeShop();
+        
+        Debug.Log("ItemsManager: Shop reset complete");
+    }
+    
+    /// <summary>
+    /// Debug method to fix shop if it gets into a glitched state
+    /// </summary>
+    [ContextMenu("Fix Shop Duplicates")]
+    public void FixShopDuplicates()
+    {
+        Debug.Log("ItemsManager: Fixing shop duplicates");
+        
+        // Clear all shop slots
+        for (int i = 0; i < shopSlots.Length; i++)
+        {
+            shopSlots[i] = Item.None;
+        }
+        
+        // Refill properly
+        RefillShopSlots();
+        
+        Debug.Log("ItemsManager: Shop duplicates fixed");
+    }
+    
     private void OnGUI()
     {
+        // Debug logging
+        if (shopIsOpen)
+        {
+            bool gameManagerExists = GameManager.Instance != null;
+            bool gameIsPaused = gameManagerExists && GameManager.Instance.IsGamePaused;
+            Debug.Log($"ItemsManager OnGUI: shopIsOpen={shopIsOpen}, gameManagerExists={gameManagerExists}, gameIsPaused={gameIsPaused}");
+        }
+        
+        // Only show shop GUI if it's open AND the game is paused (indicating proper shop interaction)
+        if (!shopIsOpen || (GameManager.Instance != null && !GameManager.Instance.IsGamePaused)) return;
+
+        Debug.Log("ItemsManager: Drawing shop GUI");
         DrawShopArea();
         DrawActiveArea();
         DrawInventoryArea();

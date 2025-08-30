@@ -10,17 +10,21 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int maxLevels = 5;
     
     private bool isFinalLevelFullyCompleted = false; // Tracks if Level 5 + final visuals are complete
+    private bool isGamePaused = false;
     
     public int CurrentLevel => currentLevel;
     public int MaxLevels => maxLevels;
     public bool IsLevelUnlocked(int level) => level <= currentLevel;
     public bool IsMaxLevelReached => currentLevel >= maxLevels;
     public bool IsFinalLevelFullyCompleted => isFinalLevelFullyCompleted;
+    public bool IsGamePaused => isGamePaused;
     
     // Events
     public System.Action<int> OnLevelChanged;
     public System.Action<int> OnLevelCompleted;
     public System.Action OnProgressReset;
+    public System.Action OnGamePaused;
+    public System.Action OnGameResumed;
     
     private void Awake()
     {
@@ -155,6 +159,38 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    #region Pause/Resume System
+    
+    /// <summary>
+    /// Pause the game (typically for shop or menus)
+    /// </summary>
+    public void PauseGame()
+    {
+        if (!isGamePaused)
+        {
+            isGamePaused = true;
+            Time.timeScale = 0f;
+            OnGamePaused?.Invoke();
+            Debug.Log("GameManager: Game paused");
+        }
+    }
+    
+    /// <summary>
+    /// Resume the game
+    /// </summary>
+    public void ResumeGame()
+    {
+        if (isGamePaused)
+        {
+            isGamePaused = false;
+            Time.timeScale = 1f;
+            OnGameResumed?.Invoke();
+            Debug.Log("GameManager: Game resumed");
+        }
+    }
+    
+    #endregion
 
     private void OnGUI()
     {
