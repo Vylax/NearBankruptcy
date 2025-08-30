@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class PostGameSummary : MonoBehaviour
 {
-    bool showSummary = false;
+    public bool showSummary = false;
 
     public int ComputeSummary(bool win, float timeLeft)
     {

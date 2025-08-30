@@ -95,6 +95,8 @@ public class GameManager : MonoBehaviour
 
     [ContextMenu("Trigger Bankruptcy")]
     public void Bankrupt() {
+        GetComponent<PostGameSummary>().showSummary = false;
+
         ResetProgress();
         MoneyManager.ResetMoney();
         UnityEngine.SceneManagement.SceneManager.LoadScene("Bankruptcy");
@@ -119,6 +121,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(PostGameSummaryCoroutine(true, timeLeft));
     }
 
+    [ContextMenu("Die")]
     public void Die()
     {
         // Display post-game summary and update money
@@ -140,8 +143,9 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(2.5f);
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Bankruptcy")
         {
+            GetComponent<PostGameSummary>().showSummary = false;
             UnityEngine.SceneManagement.SceneManager.LoadScene("WorldMenu");
+            CompleteLevel(currentLevel);
         }
-
     }
 }
