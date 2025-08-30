@@ -110,6 +110,7 @@ public class GameManager : MonoBehaviour
         GetComponent<LevelManager>().StartNewLevel(300); // TODO un-hardcode the level duration and adapt it to the current level
     }
 
+    [ContextMenu("Win Level")]
     public void Win()
     {
         float timeLeft = GetComponent<LevelManager>().LevelCompleteTime();

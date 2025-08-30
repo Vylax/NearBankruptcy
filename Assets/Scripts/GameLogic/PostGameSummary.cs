@@ -111,7 +111,7 @@ public class PostGameSummary : MonoBehaviour
         {
             GUILayout.BeginVertical();
 
-            GUILayout.Label(_displayIsWin ? "VICTORY" : "DEFEAT", headerStyle);
+            GUILayout.Label(_displayIsWin ? "Profit" : "Loss", headerStyle);
             GUILayout.Space(15);
 
             DrawLine("Balance Before:", $"{_displayInitialMoney} G", lineStyle);
@@ -125,17 +125,17 @@ public class PostGameSummary : MonoBehaviour
             DrawSeparator(lineStyle);
 
             string changePrefix = scoreChange >= 0 ? "+" : "";
-            totalStyle.normal.textColor = scoreChange >= 0 ? new Color(0.5f, 1f, 0.5f) : new Color(1f, 0.5f, 0.5f);
+            Color goldColor = new Color(0.941f, 0.769f, 0.275f); // #F0C846
+            Color lightGold = new Color(0.98f, 0.85f, 0.5f); // Lighter gold for positive
+            Color darkGold = new Color(0.8f, 0.6f, 0.2f); // Darker gold for negative
+            totalStyle.normal.textColor = scoreChange >= 0 ? lightGold : darkGold;
             DrawLine("Total Change:", $"{changePrefix}{scoreChange} G", totalStyle);
 
-            totalStyle.normal.textColor = Color.white;
+            totalStyle.normal.textColor = goldColor;
             DrawLine("Balance After:", $"{_displayInitialMoney + scoreChange} G", totalStyle);
 
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Continue", GUILayout.Height(40)))
-            {
-                showSummary = false;
-            }
+            
             GUILayout.Space(10);
 
             GUILayout.EndVertical();
@@ -166,21 +166,25 @@ public class PostGameSummary : MonoBehaviour
     {
         GUIStyle style = new GUIStyle(GUI.skin.box);
         Texture2D bgTexture = new Texture2D(1, 1);
-        bgTexture.SetPixel(0, 0, new Color(0.1f, 0.1f, 0.2f, 0.9f));
+        bgTexture.SetPixel(0, 0, new Color(0f, 0f, 0f, 0f)); // Transparent background
         bgTexture.Apply();
         style.normal.background = bgTexture;
         style.padding = new RectOffset(20, 20, 15, 15);
+        
+        // Add gold border effect
+        style.border = new RectOffset(2, 2, 2, 2);
         return style;
     }
 
     private GUIStyle GetHeaderStyle(bool isWin)
     {
+        Color goldColor = new Color(0.941f, 0.769f, 0.275f); // #F0C846
         return new GUIStyle(GUI.skin.label)
         {
             fontSize = 24,
             fontStyle = FontStyle.Bold,
             alignment = TextAnchor.MiddleCenter,
-            normal = { textColor = isWin ? Color.green : Color.red }
+            normal = { textColor = isWin ? goldColor : Color.red }
         };
     }
 
@@ -189,17 +193,18 @@ public class PostGameSummary : MonoBehaviour
         return new GUIStyle(GUI.skin.label)
         {
             fontSize = 16,
-            normal = { textColor = new Color(0.8f, 0.8f, 0.8f) }
+            normal = { textColor = new Color(0.9f, 0.9f, 0.9f) } // Lighter gray for better contrast on black
         };
     }
 
     private GUIStyle GetTotalStyle()
     {
+        Color goldColor = new Color(0.941f, 0.769f, 0.275f); // #F0C846
         return new GUIStyle(GUI.skin.label)
         {
             fontSize = 18,
             fontStyle = FontStyle.Bold,
-            normal = { textColor = Color.white }
+            normal = { textColor = goldColor } // Use gold for totals
         };
     }
 
