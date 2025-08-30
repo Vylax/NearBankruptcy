@@ -34,12 +34,12 @@ public class LevelManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Stops the timer and return the elapsed time when the level was completed.
+    /// Stops the timer and return the time left when the level was completed.
     /// </summary>
     public float LevelCompleteTime()
     {
         timerRunning = false;
-        return ElapsedGameTime;
+        return maxLevelTime - ElapsedGameTime;
     }
 
     private void Update()

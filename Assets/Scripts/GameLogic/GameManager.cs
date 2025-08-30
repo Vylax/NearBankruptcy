@@ -145,7 +145,19 @@ public class GameManager : MonoBehaviour
         {
             GetComponent<PostGameSummary>().showSummary = false;
             UnityEngine.SceneManagement.SceneManager.LoadScene("WorldMenu");
-            CompleteLevel(currentLevel);
+
+            // Wait until the scene is fully loaded then complete the level
+            yield return null; // Wait one frame to ensure scene is fully loaded and initialized
+            yield return new WaitForSeconds(0.5f); // Wait another 0.5 seconds to ensure the scene is fully loaded and initialized
+            if (win)
+            {
+                CompleteLevel(currentLevel);
+            }
         }
+    }
+
+    private void OnGUI()
+    {
+        GUILayout.Label($"[Debug] Money: {MoneyManager.Money}");
     }
 }

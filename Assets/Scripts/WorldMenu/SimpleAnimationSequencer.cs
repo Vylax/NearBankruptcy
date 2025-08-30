@@ -159,15 +159,22 @@ public class SimpleAnimationSequencer : MonoBehaviour
         // Wait 3 seconds after scene load (only for fresh start, not after reset)
         yield return new WaitForSeconds(3f);
         
-        // Only draw if this level hasn't been completed yet
-        if (currentLevel == 1 || !IsLevelCompleted(currentLevel - 1))
+        // Only draw level 1 lines if this is the first time (they haven't been drawn before)
+        if (currentLevel == 1)
         {
-            Debug.Log($"SimpleAnimationSequencer: Drawing initial lines for current level {currentLevel} (after 3s delay)");
-            yield return StartCoroutine(PlayLevelLinesOnly(currentLevel));
+            if (!AreLevelLinesDrawn(1))
+            {
+                Debug.Log($"SimpleAnimationSequencer: Drawing level 1 lines for the FIRST time (after 3s delay)");
+                yield return StartCoroutine(PlayLevelLinesOnly(currentLevel));
+            }
+            else
+            {
+                Debug.Log($"SimpleAnimationSequencer: Level 1 lines already drawn - skipping animation");
+            }
         }
         else
         {
-            Debug.Log($"SimpleAnimationSequencer: Skipping initial line drawing - level {currentLevel} lines already drawn");
+            Debug.Log($"SimpleAnimationSequencer: Not level 1 - lines will be drawn when CompleteLevel() is called");
         }
     }
     
@@ -210,6 +217,29 @@ public class SimpleAnimationSequencer : MonoBehaviour
         return targetGroup.bumpAnimator.GetCurrentAnimatorStateInfo(0).IsName(bumpDrawnStateName);
     }
     
+    /// <summary>
+    /// Check if level lines have been drawn (public method for WorldLevelManager)
+    /// </summary>
+    public bool AreLevelLinesDrawn(int levelNumber)
+    {
+        LevelAnimationGroup targetGroup = FindLevelGroup(levelNumber);
+        if (targetGroup?.lineAnimators == null) return false;
+        
+        // Check if ALL lines are in drawn state (not just one)
+        foreach (var animator in targetGroup.lineAnimators)
+        {
+            if (animator != null)
+            {
+                if (!animator.GetCurrentAnimatorStateInfo(0).IsName(lineDrawnStateName))
+                {
+                    return false; // If any line is NOT drawn, return false
+                }
+            }
+        }
+        
+        return true; // All lines are drawn
+    }
+    
 
     
     /// <summary>
@@ -220,10 +250,10 @@ public class SimpleAnimationSequencer : MonoBehaviour
         InitializeToIdleState();
         UpdateBumpColors();
         
-        // After reset, immediately start drawing level 1 lines (no delay)
+        // After reset, level 1 lines need to be drawn again (since it's like starting fresh)
         if (GameManager.Instance != null && GameManager.Instance.CurrentLevel == 1)
         {
-            Debug.Log("SimpleAnimationSequencer: Progress reset - immediately drawing level 1 lines");
+            Debug.Log("SimpleAnimationSequencer: Progress reset - will draw level 1 lines immediately (no delay since it's a reset)");
             StartCoroutine(PlayLevelLinesOnly(1));
         }
     }
@@ -308,8 +338,7 @@ public class SimpleAnimationSequencer : MonoBehaviour
         string levelDisplayName = string.IsNullOrEmpty(targetGroup.levelName) ? $"Level {levelNumber}" : targetGroup.levelName;
         Debug.Log($"SimpleAnimationSequencer: Level {levelNumber} completion - drawing bump + next level lines");
         
-        // Skip drawing lines for completed level (they should already be drawn)
-        // Go straight to drawing the bump for the completed level
+        // Draw the bump for the completed level (lines should already be drawn)
         if (targetGroup.bumpAnimator != null)
         {
             Debug.Log($"SimpleAnimationSequencer: Drawing bump for completed level {levelNumber}");

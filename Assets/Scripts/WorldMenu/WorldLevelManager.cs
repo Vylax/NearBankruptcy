@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityHFSM;
+using System.Collections;
 
 public class WorldLevelManager : MonoBehaviour
 {
@@ -26,6 +27,25 @@ public class WorldLevelManager : MonoBehaviour
     {
         InitializeStateMachine();
         SetupEventListeners();
+        // Wait for scene to be fully loaded before initializing
+        StartCoroutine(WaitForSceneLoadAndInitialize());
+    }
+    
+    /// <summary>
+    /// Wait for the scene to be fully loaded and rendered before initializing the world state
+    /// </summary>
+    private IEnumerator WaitForSceneLoadAndInitialize()
+    {
+        // Wait for end of frame to ensure all GameObjects are initialized
+        yield return new WaitForEndOfFrame();
+        
+        // Wait an additional frame to ensure all Start() methods have been called
+        yield return new WaitForEndOfFrame();
+        
+        // Wait a bit more to ensure scene is fully rendered and stable
+        //yield return new WaitForSeconds(0.2f);
+        
+        // Now it's safe to initialize the state machine
         fsm.Init();
     }
     
@@ -144,20 +164,20 @@ public class WorldLevelManager : MonoBehaviour
                 progressAnimationSequencer.SetLevelsToDrawnState(completedLevels);
                 Debug.Log($"World initialized - showing existing progress for completed levels 1-{completedLevels}");
                 
-                // Also set current level lines to drawn (since player is already on this level)
+                // Also set current level lines to drawn (they should have been drawn during previous level completion)
                 progressAnimationSequencer.SetCurrentLevelLinesToDrawnState(currentLevel);
-                Debug.Log($"World initialized - current level {currentLevel} lines shown");
+                Debug.Log($"World initialized - current level {currentLevel} lines shown as drawn (were drawn when previous level completed)");
             }
-            else
+            else if (currentLevel == 1)
             {
-                Debug.Log("World initialized - starting from level 1, will draw lines after delay");
-                // For level 1, start the delayed line drawing
+                // For level 1, always check if lines should be drawn with delay (only first time)
+                Debug.Log("World initialized - on level 1, checking if lines need to be drawn");
                 progressAnimationSequencer.DrawCurrentLevelLinesWithDelay();
             }
         }
 
-        // Complete initialization
-        Invoke(nameof(CompleteInitialization), 0.1f);
+        // Complete initialization after a brief delay to ensure everything is ready
+        Invoke(nameof(CompleteInitialization), 0.3f);
     }
     
     private void CompleteInitialization()
