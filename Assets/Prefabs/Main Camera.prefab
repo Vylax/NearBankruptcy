@@ -157,5 +157,5 @@ MonoBehaviour:
   idleSmoothTimeY: 0.231
   horizontalOffset: 8
   verticalOffset: 2
-  lookAheadDeadZone: 3
-  offsetChangeSpeed: 3
+  lookAheadDeadZone: 10
+  offsetChangeSpeed: 1.5
