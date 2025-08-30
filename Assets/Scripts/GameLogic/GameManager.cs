@@ -28,7 +28,6 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            LoadGameData();
         }
         else
         {
@@ -49,7 +48,6 @@ public class GameManager : MonoBehaviour
             {
                 OnLevelChanged?.Invoke(currentLevel);
             }
-            SaveGameData();
             Debug.Log($"GameManager: Completed level {level}, current level is now {currentLevel}");
         }
     }
@@ -60,21 +58,7 @@ public class GameManager : MonoBehaviour
         {
             currentLevel = level;
             OnLevelChanged?.Invoke(currentLevel);
-            SaveGameData();
         }
-    }
-    
-    private void SaveGameData()
-    {
-        PlayerPrefs.SetInt("CurrentLevel", currentLevel);
-        PlayerPrefs.SetInt("FinalLevelCompleted", isFinalLevelFullyCompleted ? 1 : 0);
-        PlayerPrefs.Save();
-    }
-    
-    private void LoadGameData()
-    {
-        currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
-        isFinalLevelFullyCompleted = PlayerPrefs.GetInt("FinalLevelCompleted", 0) == 1;
     }
     
     // Debug methods for testing
@@ -83,8 +67,6 @@ public class GameManager : MonoBehaviour
     {
         currentLevel = 1;
         isFinalLevelFullyCompleted = false; // Reset final completion flag
-        PlayerPrefs.DeleteKey("CurrentLevel");
-        PlayerPrefs.DeleteKey("FinalLevelCompleted");
         
         // Notify listeners that progress has been reset
         OnProgressReset?.Invoke();
@@ -99,7 +81,6 @@ public class GameManager : MonoBehaviour
     public void MarkFinalLevelFullyCompleted()
     {
         isFinalLevelFullyCompleted = true;
-        SaveGameData();
         Debug.Log("GameManager: Final level fully completed - Level 5 interaction disabled");
     }
     
@@ -108,4 +89,15 @@ public class GameManager : MonoBehaviour
     {
         CompleteLevel(currentLevel);
     }
+
+    #region Bankrupt
+
+    [ContextMenu("Trigger Bankruptcy")]
+    public void Bankrupt() {
+        ResetProgress();
+        MoneyManager.ResetMoney();
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Bankruptcy");
+    }
+
+    #endregion
 }
