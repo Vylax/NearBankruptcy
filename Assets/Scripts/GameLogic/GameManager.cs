@@ -25,7 +25,10 @@ public class GameManager : MonoBehaviour
     public System.Action OnProgressReset;
     public System.Action OnGamePaused;
     public System.Action OnGameResumed;
-    
+
+    // Whether the player is invincible (used during transitions, shop, etc.)
+    private bool invincible = false;
+
     private void Awake()
     {
         // Singleton pattern
@@ -70,6 +73,7 @@ public class GameManager : MonoBehaviour
     [ContextMenu("Reset Progress")]
     public void ResetProgress()
     {
+        invincible = false;
         currentLevel = 1;
         isFinalLevelFullyCompleted = false; // Reset final completion flag
         
@@ -119,6 +123,8 @@ public class GameManager : MonoBehaviour
     [ContextMenu("Win Level")]
     public void Win()
     {
+        if (invincible) return; // Ignore win if invincible (e.g. during transitions or shop)
+        invincible = true;
         float timeLeft = GetComponent<LevelManager>().LevelCompleteTime();
 
         // Display post-game summary and update money
@@ -128,6 +134,8 @@ public class GameManager : MonoBehaviour
     [ContextMenu("Die")]
     public void Die()
     {
+        if (invincible) return; // Ignore death if invincible (e.g. during transitions or shop)
+        invincible = true;
         // Display post-game summary and update money
         StartCoroutine(PostGameSummaryCoroutine(false, 0));
     }
@@ -157,6 +165,7 @@ public class GameManager : MonoBehaviour
             {
                 CompleteLevel(currentLevel);
             }
+            invincible = false;
         }
     }
 
