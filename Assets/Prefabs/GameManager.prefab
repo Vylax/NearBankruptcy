@@ -1,5 +1,145 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5309902841330209060
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7952987722844679670}
+  - component: {fileID: 7714023405203414720}
+  m_Layer: 0
+  m_Name: SpeedBoostEffect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7952987722844679670
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5309902841330209060}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3895740924178302012}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7714023405203414720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5309902841330209060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 625baac36e0194143a0efa5f35d6a6fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speedMultiplier: 1.5
+  debugMode: 0
+--- !u!1 &5502626749298267246
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7166488308649823791}
+  - component: {fileID: 8501513384187091820}
+  m_Layer: 0
+  m_Name: SlowMoEffect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7166488308649823791
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5502626749298267246}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3895740924178302012}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8501513384187091820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5502626749298267246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f697bdc1ae8139447bf7150bfe0236cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slowdownFactor: 0.5
+  slowdownDuration: 5
+  slowMoKey: 113
+  debugMode: 1
+--- !u!1 &8144314308639808377
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8187014825376363950}
+  - component: {fileID: 3696459742202677496}
+  m_Layer: 0
+  m_Name: ShieldEffect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8187014825376363950
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8144314308639808377}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3895740924178302012}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3696459742202677496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8144314308639808377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06953af8a36ba6e40962d2e2482aa27e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  invincibilityDuration: 0.2
+  debugMode: 0
 --- !u!1 &8766690678520194840
 GameObject:
   m_ObjectHideFlags: 0
@@ -13,6 +153,7 @@ GameObject:
   - component: {fileID: 7151078254452636663}
   - component: {fileID: 1988621055687584037}
   - component: {fileID: 8067069765804443647}
+  - component: {fileID: 9031923140777702}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -32,7 +173,10 @@ Transform:
   m_LocalPosition: {x: -4.5183606, y: 5.9720516, z: -3.2595978}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 7952987722844679670}
+  - {fileID: 7166488308649823791}
+  - {fileID: 8187014825376363950}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6327599894995771153
@@ -93,3 +237,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bedd33688fe6b294f8443c3b87c83c5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &9031923140777702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8766690678520194840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1bf7c09331154942bbf0409a5842a56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dashEffect: {fileID: 0}
+  doubleJumpEffect: {fileID: 0}
+  shieldEffect: {fileID: 3696459742202677496}
+  speedBoostEffect: {fileID: 7714023405203414720}
+  gliderEffect: {fileID: 0}
+  smallSizeEffect: {fileID: 0}
+  slowMotionEffect: {fileID: 8501513384187091820}
+  reverseGravityEffect: {fileID: 0}
+  wallJumpEffect: {fileID: 0}
+  walkThroughWallsEffect: {fileID: 0}
+  depthStriderEffect: {fileID: 0}
+  debugMode: 0
