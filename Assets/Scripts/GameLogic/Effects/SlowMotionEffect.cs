@@ -12,7 +12,7 @@ public class SlowMotionEffect : MonoBehaviour
     [SerializeField] private float slowdownFactor = 0.5f; // Half speed
     [SerializeField] private float slowdownDuration = 5f; // 5 real-world seconds
     [SerializeField] private KeyCode slowMoKey = KeyCode.Space;
-    [SerializeField] private bool debugMode = false;
+    [SerializeField] private bool debugMode = true; // Enable debug by default to troubleshoot
 
     private bool effectActive = false;
     private bool hasBeenUsedThisScene = false;
@@ -21,19 +21,23 @@ public class SlowMotionEffect : MonoBehaviour
 
     private void OnEnable()
     {
-        effectActive = true;
+        CheckForSceneChange(); // Always check for scene change when enabled
         
-        // Check if we're in a new scene
-        string sceneName = SceneManager.GetActiveScene().name;
-        if (sceneName != currentSceneName)
+        if (IsValidScene())
         {
-            currentSceneName = sceneName;
-            hasBeenUsedThisScene = false; // Reset usage for new scene
+            effectActive = true;
+            if (debugMode)
+            {
+                Debug.Log($"SlowMotionEffect: Activated in scene '{currentSceneName}', used this scene: {hasBeenUsedThisScene}");
+            }
         }
-        
-        if (debugMode)
+        else
         {
-            Debug.Log($"SlowMotionEffect: Activated in scene '{sceneName}', used this scene: {hasBeenUsedThisScene}");
+            effectActive = false;
+            if (debugMode)
+            {
+                Debug.Log($"SlowMotionEffect: Scene '{currentSceneName}' is not valid for effects");
+            }
         }
     }
 
@@ -51,18 +55,38 @@ public class SlowMotionEffect : MonoBehaviour
         
         if (debugMode)
         {
-            Debug.Log("SlowMotionEffect: Deactivated");
+            Debug.Log($"SlowMotionEffect: Deactivated in scene '{SceneManager.GetActiveScene().name}', used this scene: {hasBeenUsedThisScene}");
         }
+        
+        // DON'T reset hasBeenUsedThisScene here - only reset on actual scene change
     }
 
     private void Update()
     {
-        if (!effectActive || !IsValidScene()) return;
+        // Always check for scene changes in Update to catch transitions
+        CheckForSceneChange();
+        
+        if (!effectActive || !IsValidScene()) 
+        {
+            // Debug why we're not processing input
+            if (debugMode && Input.GetKeyDown(slowMoKey))
+            {
+                Debug.Log($"SlowMotionEffect: Input blocked - EffectActive: {effectActive}, ValidScene: {IsValidScene()}, Scene: '{SceneManager.GetActiveScene().name}'");
+            }
+            return;
+        }
 
         // Check for slow motion input
-        if (Input.GetKeyDown(slowMoKey) && CanActivateSlowMotion())
+        if (Input.GetKeyDown(slowMoKey))
         {
-            ActivateSlowdown();
+            if (CanActivateSlowMotion())
+            {
+                ActivateSlowdown();
+            }
+            else if (debugMode)
+            {
+                Debug.Log($"SlowMotionEffect: Cannot activate - UsedThisScene: {hasBeenUsedThisScene}, InProgress: {slowMotionInProgress}");
+            }
         }
     }
 
@@ -70,6 +94,25 @@ public class SlowMotionEffect : MonoBehaviour
     {
         string sceneName = SceneManager.GetActiveScene().name;
         return sceneName == "WorldMenu" || sceneName.StartsWith("Level");
+    }
+
+    /// <summary>
+    /// Checks for scene changes and resets usage if needed
+    /// </summary>
+    private void CheckForSceneChange()
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+        if (sceneName != currentSceneName)
+        {
+            string previousScene = currentSceneName;
+            currentSceneName = sceneName;
+            hasBeenUsedThisScene = false; // Reset usage for new scene
+            
+            if (debugMode)
+            {
+                Debug.Log($"SlowMotionEffect: Scene changed from '{previousScene}' to '{sceneName}' - usage reset");
+            }
+        }
     }
 
     private bool CanActivateSlowMotion()

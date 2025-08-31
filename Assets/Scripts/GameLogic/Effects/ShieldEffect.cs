@@ -12,7 +12,7 @@ public class ShieldEffect : MonoBehaviour
 {
     [Header("Shield Settings")]
     [SerializeField] private float invincibilityDuration = 0.2f;
-    [SerializeField] private bool debugMode = false;
+    [SerializeField] private bool debugMode = false; // Set to true to troubleshoot scene transitions
 
     private bool effectActive = false;
     private bool hasBeenUsedThisScene = false;
@@ -21,21 +21,22 @@ public class ShieldEffect : MonoBehaviour
 
     private void OnEnable()
     {
+        CheckForSceneChange(); // Always check for scene change when enabled
+        
         if (IsValidScene())
         {
             effectActive = true;
-            
-            // Check if we're in a new scene
-            string sceneName = SceneManager.GetActiveScene().name;
-            if (sceneName != currentSceneName)
-            {
-                currentSceneName = sceneName;
-                hasBeenUsedThisScene = false; // Reset usage for new scene
-            }
-            
             if (debugMode)
             {
-                Debug.Log($"ShieldEffect: Activated in scene '{sceneName}', used this scene: {hasBeenUsedThisScene}");
+                Debug.Log($"ShieldEffect: Activated in scene '{currentSceneName}', used this scene: {hasBeenUsedThisScene}");
+            }
+        }
+        else
+        {
+            effectActive = false;
+            if (debugMode)
+            {
+                Debug.Log($"ShieldEffect: Scene '{currentSceneName}' is not valid for effects");
             }
         }
     }
@@ -53,8 +54,10 @@ public class ShieldEffect : MonoBehaviour
         
         if (debugMode)
         {
-            Debug.Log("ShieldEffect: Deactivated");
+            Debug.Log($"ShieldEffect: Deactivated in scene '{SceneManager.GetActiveScene().name}', used this scene: {hasBeenUsedThisScene}");
         }
+        
+        // DON'T reset hasBeenUsedThisScene here - only reset on actual scene change
     }
 
     private bool IsValidScene()
@@ -64,10 +67,32 @@ public class ShieldEffect : MonoBehaviour
     }
 
     /// <summary>
+    /// Checks for scene changes and resets usage if needed
+    /// </summary>
+    private void CheckForSceneChange()
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+        if (sceneName != currentSceneName)
+        {
+            string previousScene = currentSceneName;
+            currentSceneName = sceneName;
+            hasBeenUsedThisScene = false; // Reset usage for new scene
+            
+            if (debugMode)
+            {
+                Debug.Log($"ShieldEffect: Scene changed from '{previousScene}' to '{sceneName}' - usage reset");
+            }
+        }
+    }
+
+    /// <summary>
     /// Called when player takes damage - returns true if damage was blocked
     /// </summary>
     public bool TryBlockDamage()
     {
+        // Always check for scene changes when this method is called
+        CheckForSceneChange();
+        
         if (!effectActive || !IsValidScene() || hasBeenUsedThisScene || isInvincible) 
         {
             return false; // Cannot block
