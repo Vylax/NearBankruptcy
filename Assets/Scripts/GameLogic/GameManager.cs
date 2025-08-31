@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     public bool IsMaxLevelReached => currentLevel >= maxLevels;
     public bool IsFinalLevelFullyCompleted => isFinalLevelFullyCompleted;
     public bool IsGamePaused => isGamePaused;
+    public bool IsInvincible => invincible;
     
     // Events
     public System.Action<int> OnLevelChanged;
@@ -86,6 +87,20 @@ public class GameManager : MonoBehaviour
         
         Debug.Log("GameManager: Progress reset to level 1");
     }
+
+    /// <summary>
+    /// Set invincible state (used by shield and other effects)
+    /// </summary>
+    public void SetInvincible(bool isInvincible)
+    {
+        invincible = isInvincible;
+        if (debugMode)
+        {
+            Debug.Log($"GameManager: Invincible set to {isInvincible}");
+        }
+    }
+
+    private bool debugMode = false; // Add debug mode for GameManager
     
     /// <summary>
     /// Mark Level 5 as fully completed (including final visuals) - prevents further interaction

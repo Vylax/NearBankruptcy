@@ -16,11 +16,17 @@ public class ShieldEffect : MonoBehaviour
 
     private bool effectActive = false;
     private bool hasBeenUsedThisScene = false;
-    private bool isInvincible = false;
     private string currentSceneName = "";
+    private GameManager gameManager;
 
     private void OnEnable()
     {
+        // Get GameManager reference
+        if (gameManager == null)
+        {
+            gameManager = GameManager.Instance;
+        }
+        
         CheckForSceneChange(); // Always check for scene change when enabled
         
         if (IsValidScene())
@@ -45,11 +51,14 @@ public class ShieldEffect : MonoBehaviour
     {
         effectActive = false;
         
-        // Stop any ongoing invincibility coroutine
-        if (isInvincible)
+        // Stop any ongoing invincibility coroutine and restore GameManager invincible state
+        if (IsInvincible)
         {
             StopAllCoroutines();
-            isInvincible = false;
+            if (gameManager != null)
+            {
+                gameManager.SetInvincible(false);
+            }
         }
         
         if (debugMode)
@@ -93,7 +102,7 @@ public class ShieldEffect : MonoBehaviour
         // Always check for scene changes when this method is called
         CheckForSceneChange();
         
-        if (!effectActive || !IsValidScene() || hasBeenUsedThisScene || isInvincible) 
+        if (!effectActive || !IsValidScene() || hasBeenUsedThisScene || IsInvincible) 
         {
             return false; // Cannot block
         }
@@ -124,24 +133,30 @@ public class ShieldEffect : MonoBehaviour
     }
 
     /// <summary>
-    /// Provides invincibility window for the specified duration
+    /// Provides invincibility window for the specified duration using GameManager's invincible system
     /// </summary>
     private IEnumerator InvincibilityWindow()
     {
-        isInvincible = true;
+        if (gameManager != null)
+        {
+            gameManager.SetInvincible(true);
+        }
         
         if (debugMode)
         {
-            Debug.Log("ShieldEffect: Invincibility window started");
+            Debug.Log("ShieldEffect: Invincibility window started (GameManager.invincible = true)");
         }
         
         yield return new WaitForSeconds(invincibilityDuration);
         
-        isInvincible = false;
+        if (gameManager != null)
+        {
+            gameManager.SetInvincible(false);
+        }
         
         if (debugMode)
         {
-            Debug.Log("ShieldEffect: Invincibility window ended - shield used up for this scene");
+            Debug.Log("ShieldEffect: Invincibility window ended - shield used up for this scene (GameManager.invincible = false)");
         }
         
         // TODO: Add invincibility end visual/audio effects
@@ -166,7 +181,7 @@ public class ShieldEffect : MonoBehaviour
     
     public bool IsInvincible 
     {
-        get { return isInvincible; }
+        get { return gameManager != null && gameManager.IsInvincible; }
     }
 
     /// <summary>

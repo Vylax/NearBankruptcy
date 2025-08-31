@@ -93,7 +93,7 @@ MonoBehaviour:
   slowdownFactor: 0.5
   slowdownDuration: 5
   slowMoKey: 113
-  debugMode: 1
+  debugMode: 0
 --- !u!1 &8144314308639808377
 GameObject:
   m_ObjectHideFlags: 0
@@ -139,7 +139,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   invincibilityDuration: 0.2
-  debugMode: 0
+  debugMode: 1
 --- !u!1 &8766690678520194840
 GameObject:
   m_ObjectHideFlags: 0
@@ -260,4 +260,4 @@ MonoBehaviour:
   wallJumpEffect: {fileID: 0}
   walkThroughWallsEffect: {fileID: 0}
   depthStriderEffect: {fileID: 0}
-  debugMode: 0
+  debugMode: 1
