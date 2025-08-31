@@ -212,17 +212,4 @@ public class PostGameSummary : MonoBehaviour
 
     #endregion
 
-    // --- Example Usage (for testing) --- TODO remove when done testing
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            int score = ComputeSummary(true, 125.5f);
-        }
-
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            int score = ComputeSummary(false, 0f);
-        }
-    }
 }

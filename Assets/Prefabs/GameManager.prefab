@@ -49,6 +49,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentLevel: 1
   maxLevels: 5
+  goldIcon: {fileID: 2800000, guid: 995f99572bf87ae4e9067eee3d20c0c7, type: 3}
+  clockIcon: {fileID: 2800000, guid: cea1b45f2d6320e4fae5c97888191adb, type: 3}
 --- !u!114 &7151078254452636663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,6 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 015f8dded3e7d6f41a100884f1a56657, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  showSummary: 0
 --- !u!114 &1988621055687584037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,6 +77,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemsSlots: 000000000000000000000000
+  inventorySlots: 000000000000000000000000
+  shopSlots: 000000000000000000000000
+  sellSlot: 0
+  shopIsOpen: 0
 --- !u!114 &8067069765804443647
 MonoBehaviour:
   m_ObjectHideFlags: 0

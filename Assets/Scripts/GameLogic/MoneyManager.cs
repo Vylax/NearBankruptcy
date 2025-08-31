@@ -1,6 +1,6 @@
 public static class MoneyManager {
 
-    private static int money = 0;
+    private static int money = 5000;
 
     public static int Money => money;
 
@@ -30,6 +30,6 @@ public static class MoneyManager {
     }
     
     public static void ResetMoney() {
-        money = 0;
+        money = 5000;
     }
 }

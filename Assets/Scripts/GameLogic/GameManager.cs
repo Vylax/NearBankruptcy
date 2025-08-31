@@ -10,18 +10,25 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int maxLevels = 5;
     
     private bool isFinalLevelFullyCompleted = false; // Tracks if Level 5 + final visuals are complete
+    private bool isGamePaused = false;
     
     public int CurrentLevel => currentLevel;
     public int MaxLevels => maxLevels;
     public bool IsLevelUnlocked(int level) => level <= currentLevel;
     public bool IsMaxLevelReached => currentLevel >= maxLevels;
     public bool IsFinalLevelFullyCompleted => isFinalLevelFullyCompleted;
+    public bool IsGamePaused => isGamePaused;
     
     // Events
     public System.Action<int> OnLevelChanged;
     public System.Action<int> OnLevelCompleted;
     public System.Action OnProgressReset;
-    
+    public System.Action OnGamePaused;
+    public System.Action OnGameResumed;
+
+    // Whether the player is invincible (used during transitions, shop, etc.)
+    private bool invincible = false;
+
     private void Awake()
     {
         // Singleton pattern
@@ -66,9 +73,13 @@ public class GameManager : MonoBehaviour
     [ContextMenu("Reset Progress")]
     public void ResetProgress()
     {
+        invincible = false;
         currentLevel = 1;
         isFinalLevelFullyCompleted = false; // Reset final completion flag
         
+        // Reset money
+        MoneyManager.ResetMoney();
+
         // Notify listeners that progress has been reset
         OnProgressReset?.Invoke();
         OnLevelChanged?.Invoke(currentLevel);
@@ -115,6 +126,8 @@ public class GameManager : MonoBehaviour
     [ContextMenu("Win Level")]
     public void Win()
     {
+        if (invincible) return; // Ignore win if invincible (e.g. during transitions or shop)
+        invincible = true;
         float timeLeft = GetComponent<LevelManager>().LevelCompleteTime();
 
         // Display post-game summary and update money
@@ -124,6 +137,8 @@ public class GameManager : MonoBehaviour
     [ContextMenu("Die")]
     public void Die()
     {
+        if (invincible) return; // Ignore death if invincible (e.g. during transitions or shop)
+        invincible = true;
         // Display post-game summary and update money
         StartCoroutine(PostGameSummaryCoroutine(false, 0));
     }
@@ -153,11 +168,90 @@ public class GameManager : MonoBehaviour
             {
                 CompleteLevel(currentLevel);
             }
+            invincible = false;
         }
     }
 
+    #region Pause/Resume System
+    
+    /// <summary>
+    /// Pause the game (typically for shop or menus)
+    /// </summary>
+    public void PauseGame()
+    {
+        if (!isGamePaused)
+        {
+            isGamePaused = true;
+            Time.timeScale = 0f;
+            OnGamePaused?.Invoke();
+            Debug.Log("GameManager: Game paused");
+        }
+    }
+    
+    /// <summary>
+    /// Resume the game
+    /// </summary>
+    public void ResumeGame()
+    {
+        if (isGamePaused)
+        {
+            isGamePaused = false;
+            Time.timeScale = 1f;
+            OnGameResumed?.Invoke();
+            Debug.Log("GameManager: Game resumed");
+        }
+    }
+    
+    #endregion
+
+    [Header("UI Elements")]
+    [SerializeField] private Texture2D goldIcon;
+    [SerializeField] private Texture2D clockIcon;
+
     private void OnGUI()
     {
-        GUILayout.Label($"[Debug] Money: {MoneyManager.Money}");
+        // Money display with gold icon
+        GUI.BeginGroup(new Rect(10, 10, 300, 50));
+        
+        // Money text
+        string moneyText = MoneyManager.Money.ToString();
+        Vector2 moneyTextSize = GUI.skin.label.CalcSize(new GUIContent(moneyText));
+        GUI.Label(new Rect(0, 0, moneyTextSize.x, moneyTextSize.y), moneyText);
+        
+        // Gold icon - center aligned with text
+        if (goldIcon != null)
+        {
+            float iconSize = moneyTextSize.y; // Make icon same height as text
+            float iconY = (moneyTextSize.y - iconSize) / 2; // Center vertically with text
+            GUI.DrawTexture(new Rect(moneyTextSize.x + 5, iconY, iconSize, iconSize), goldIcon);
+        }
+        
+        GUI.EndGroup();
+
+        // Time display with clock icon (only in Level scenes)
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name.StartsWith("Level"))
+        {
+            LevelManager levelManager = GetComponent<LevelManager>();
+            if (levelManager != null)
+            {
+                GUI.BeginGroup(new Rect(10, 60, 300, 50));
+                
+                // Time text
+                int timeLeft = Mathf.Max(0, (int)levelManager.TimeLeft);
+                string timeText = timeLeft.ToString();
+                Vector2 timeTextSize = GUI.skin.label.CalcSize(new GUIContent(timeText));
+                GUI.Label(new Rect(0, 0, timeTextSize.x, timeTextSize.y), timeText);
+                
+                // Clock icon - center aligned with text
+                if (clockIcon != null)
+                {
+                    float iconSize = timeTextSize.y; // Make icon same height as text
+                    float iconY = (timeTextSize.y - iconSize) / 2; // Center vertically with text
+                    GUI.DrawTexture(new Rect(timeTextSize.x + 5, iconY, iconSize, iconSize), clockIcon);
+                }
+                
+                GUI.EndGroup();
+            }
+        }
     }
 }
