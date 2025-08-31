@@ -153,6 +153,18 @@ public class GameManager : MonoBehaviour
     public void Die()
     {
         if (invincible) return; // Ignore death if invincible (e.g. during transitions or shop)
+        
+        // Check shield before dying
+        ItemsEffects itemsEffects = GetComponent<ItemsEffects>();
+        if (itemsEffects != null)
+        {
+            ShieldEffect shieldEffect = itemsEffects.GetShieldEffect();
+            if (shieldEffect != null && shieldEffect.TryBlockDamage())
+            {
+                return; // Shield blocked the damage
+            }
+        }
+        
         invincible = true;
         // Display post-game summary and update money
         StartCoroutine(PostGameSummaryCoroutine(false, 0));

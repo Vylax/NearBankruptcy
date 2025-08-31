@@ -147,6 +147,11 @@ public class ItemsEffects : MonoBehaviour
             }
         }
         
+        if (debugMode)
+        {
+            Debug.Log($"ItemsEffects: Active items in scene '{SceneManager.GetActiveScene().name}': [{string.Join(", ", itemsManager.itemsSlots)}] -> Effects: [{string.Join(", ", newActiveEffects)}]");
+        }
+        
         // Check if there are any changes
         if (newActiveEffects.SetEquals(currentlyActiveEffects))
         {
@@ -233,7 +238,7 @@ public class ItemsEffects : MonoBehaviour
             }
         }
         
-        currentlyActiveEffects.Clear();
+        currentlyActiveEffects.Clear(); // THIS WAS THE BUG - clearing after disabling
         
         if (debugMode)
         {
@@ -262,6 +267,18 @@ public class ItemsEffects : MonoBehaviour
     {
         currentlyActiveEffects.Clear(); // Force a full refresh
         UpdateActiveEffects();
+    }
+
+    /// <summary>
+    /// Get shield effect for damage blocking
+    /// </summary>
+    public ShieldEffect GetShieldEffect()
+    {
+        if (effectScripts.TryGetValue(Item.Shield, out MonoBehaviour shield))
+        {
+            return shield as ShieldEffect;
+        }
+        return null;
     }
 
     /// <summary>

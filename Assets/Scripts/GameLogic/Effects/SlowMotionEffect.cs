@@ -12,7 +12,7 @@ public class SlowMotionEffect : MonoBehaviour
     [SerializeField] private float slowdownFactor = 0.5f; // Half speed
     [SerializeField] private float slowdownDuration = 5f; // 5 real-world seconds
     [SerializeField] private KeyCode slowMoKey = KeyCode.Space;
-    [SerializeField] private bool debugMode = true; // Enable debug by default to troubleshoot
+    [SerializeField] private bool debugMode = false;
 
     private bool effectActive = false;
     private bool hasBeenUsedThisScene = false;

@@ -12,7 +12,7 @@ public class ShieldEffect : MonoBehaviour
 {
     [Header("Shield Settings")]
     [SerializeField] private float invincibilityDuration = 0.2f;
-    [SerializeField] private bool debugMode = false; // Set to true to troubleshoot scene transitions
+    [SerializeField] private bool debugMode = false;
 
     private bool effectActive = false;
     private bool hasBeenUsedThisScene = false;
