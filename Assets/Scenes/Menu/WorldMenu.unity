@@ -541,7 +541,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 45352730548921104, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
       propertyPath: levelSceneName
-      value: Level1
+      value: Level2
       objectReference: {fileID: 0}
     - target: {fileID: 1138282955029361322, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1652,7 +1652,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 45352730548921104, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
       propertyPath: levelSceneName
-      value: Level1
+      value: Level3
       objectReference: {fileID: 0}
     - target: {fileID: 45352730548921104, guid: 6608fb4a9852ef64d82092a53169c5b4, type: 3}
       propertyPath: interactionRange

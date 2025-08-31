@@ -15,8 +15,17 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu/PostGameSummary.unity
     guid: e2b39a44e36fee94c8e597d9a8d46e28
   - enabled: 1
+    path: Assets/Scenes/Menu/GameWin.unity
+    guid: e4c0097d466c07748b50c7c558c5493c
+  - enabled: 1
     path: Assets/Scenes/Level1.unity
     guid: 21067ab9ac656f74e81dd85b273f6a58
+  - enabled: 1
+    path: Assets/Scenes/Level2.unity
+    guid: 7cec6eed12ed6274796dc4d792af169d
+  - enabled: 1
+    path: Assets/Scenes/Level3.unity
+    guid: 6e17c3833605eab46a1aa16bb525b7b7
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
