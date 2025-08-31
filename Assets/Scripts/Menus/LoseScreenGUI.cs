@@ -2,16 +2,16 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// This script uses the OnGUI system to draw "Try Again" and "Quit" buttons.
-/// It's designed for a lose screen and provides custom styling for the buttons.
-/// Attach this component to any active GameObject in your lose scene, like the Camera.
+/// This script uses the OnGUI system to draw navigation buttons like "Play Again" or "Quit".
+/// It's designed for end screens (both win and lose) and provides custom styling.
+/// Attach this component to an active GameObject in your scene, like the Camera.
 /// </summary>
 public class LoseScreenGUI : MonoBehaviour
 {
-    /// <summary>
-    /// Optional: Assign a custom font in the Inspector to be used for the buttons.
-    /// If left empty, it will use the default Unity font.
-    /// </summary>
+    [Tooltip("The text to display on the main action button (e.g., 'Try Again' or 'Play Again').")]
+    public string mainButtonText = "Try Again"; // Default text
+
+    [Tooltip("Optional: Assign a custom font for the buttons.")]
     public Font buttonFont;
 
     private GUIStyle buttonStyle;
@@ -21,14 +21,12 @@ public class LoseScreenGUI : MonoBehaviour
     void OnGUI()
     {
         // Initialize the custom style for our buttons if it hasn't been already.
-        // We do this here because OnGUI is the only place we can safely access GUI.skin.
         if (buttonStyle == null)
         {
             CreateButtonStyle();
         }
 
         // --- Button Layout and Positioning ---
-
         int buttonWidth = 280;
         int buttonHeight = 60;
         int spacing = 25;
@@ -36,24 +34,20 @@ public class LoseScreenGUI : MonoBehaviour
         // Center the buttons on the screen.
         float centerX = Screen.width / 2f;
 
-        // We'll stack them vertically. Check if the Quit button should be shown to calculate the total height.
+        // Determine total UI height based on whether the Quit button is visible.
         bool isQuitButtonVisible = IsQuitAvailable();
         float totalUIHeight = isQuitButtonVisible ? (buttonHeight * 2 + spacing) : buttonHeight;
 
-        // Start drawing below the center of the screen to leave space for "Bankrupt!" text.
+        // Start drawing below the vertical center to leave space for title text.
         float startY = (Screen.height / 2f) - (totalUIHeight / 2f) + 100;
 
+        // --- Draw the Main Action Button ("Play Again" / "Try Again") ---
+        Rect mainButtonRect = new Rect(centerX - (buttonWidth / 2), startY, buttonWidth, buttonHeight);
 
-        // --- Draw the "Try Again" Button ---
-
-        Rect tryAgainRect = new Rect(centerX - (buttonWidth / 2), startY, buttonWidth, buttonHeight);
-
-        if (GUI.Button(tryAgainRect, "Try Again", buttonStyle))
+        // Use the public mainButtonText variable here
+        if (GUI.Button(mainButtonRect, mainButtonText, buttonStyle))
         {
-            // If the button is clicked...
-
-            // First, call the GameManager to reset progress.
-            // A check is included to prevent errors if the instance doesn't exist.
+            // Reset progress via the GameManager if it exists.
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.ResetProgress();
@@ -63,24 +57,21 @@ public class LoseScreenGUI : MonoBehaviour
                 Debug.LogWarning("GameManager.Instance not found! Cannot reset progress.");
             }
 
-            // Then, load the main menu scene.
+            // Load the main menu scene.
             SceneManager.LoadScene("WorldMenu");
         }
 
         // --- Draw the "Quit" Button (Platform-Dependent) ---
-
-        // We only show the quit button if it's available on the current platform.
         if (isQuitButtonVisible)
         {
             Rect quitRect = new Rect(centerX - (buttonWidth / 2), startY + buttonHeight + spacing, buttonWidth, buttonHeight);
 
             if (GUI.Button(quitRect, "Quit", buttonStyle))
             {
-                // If we are running in the Unity Editor, stop playing.
+                // If running in the Unity Editor, stop playing.
 #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
-
-                // If we are in a standalone build (Windows, Mac, Linux), quit the application.
+                // If in a standalone build, quit the application.
 #else
                 Application.Quit();
 #endif
@@ -89,19 +80,19 @@ public class LoseScreenGUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Checks if the quit functionality is available. It's disabled for WebGL builds.
+    /// Checks if the quit functionality is available (disabled for WebGL).
     /// </summary>
     private bool IsQuitAvailable()
     {
 #if UNITY_WEBGL
-            return false;
+        return false;
 #else
         return true;
 #endif
     }
 
     /// <summary>
-    /// Creates the custom GUIStyle for our buttons.
+    /// Creates the custom GUIStyle for the buttons.
     /// </summary>
     private void CreateButtonStyle()
     {
@@ -114,19 +105,18 @@ public class LoseScreenGUI : MonoBehaviour
 
         buttonStyle.fontSize = 24;
         buttonStyle.alignment = TextAnchor.MiddleCenter;
-        buttonStyle.normal.textColor = new Color(1f, 0.85f, 0.2f); // A nice gold/yellow
+        buttonStyle.normal.textColor = new Color(1f, 0.85f, 0.2f); // Gold/yellow
         buttonStyle.hover.textColor = Color.white;
         buttonStyle.active.textColor = Color.gray;
 
         // Create simple colored textures for the button's background states.
-        // This gives it a clean, modern look that fits your neon theme.
         buttonStyle.normal.background = MakeTex(2, 2, new Color(0.15f, 0.15f, 0.15f, 0.9f));
         buttonStyle.hover.background = MakeTex(2, 2, new Color(0.25f, 0.25f, 0.25f, 0.9f));
         buttonStyle.active.background = MakeTex(2, 2, new Color(0.1f, 0.1f, 0.1f, 0.9f));
     }
 
     /// <summary>
-    /// A helper function to create a simple 2x2 texture of a solid color.
+    /// Helper function to create a simple 2x2 texture of a solid color.
     /// </summary>
     private Texture2D MakeTex(int width, int height, Color col)
     {

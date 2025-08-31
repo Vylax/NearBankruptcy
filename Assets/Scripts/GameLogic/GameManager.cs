@@ -149,6 +149,12 @@ public class GameManager : MonoBehaviour
         StartCoroutine(PostGameSummaryCoroutine(true, timeLeft));
     }
 
+    public void WinGame()
+    {
+        // Load game win scene
+        UnityEngine.SceneManagement.SceneManager.LoadScene("GameWin");
+    }
+
     [ContextMenu("Die")]
     public void Die()
     {
